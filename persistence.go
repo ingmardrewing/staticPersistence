@@ -8,8 +8,13 @@ import (
 
 type PostAdder interface {
 	Read()
+	GetDir() string
 	GetMdInitContent() string
+	GetJsonFileName() string
+	GetJsonFilePath() string
+	GetJsonFileContent() string
 	GetMdContent() string
+	GetMdFileName() string
 	GetImgFilePath() string
 	GetImgFileName() string
 	GetMdFilePath() string
@@ -21,6 +26,7 @@ type postAdder struct {
 	mdfilename      string
 	mdinitcontent   string
 	mdcontent       string
+	imgjsoncontent  string
 	imgjsonfilename string
 }
 
@@ -33,6 +39,10 @@ func NewPostAdder(path string) PostAdder {
 	return p
 }
 
+func (p *postAdder) GetDir() string {
+	return p.dirpath
+}
+
 func (p *postAdder) GetMdInitContent() string {
 	return p.mdinitcontent
 }
@@ -41,12 +51,16 @@ func (p *postAdder) GetMdContent() string {
 	return p.mdcontent
 }
 
+func (p *postAdder) GetJsonFileContent() string {
+	return p.imgjsoncontent
+}
+
 func (p *postAdder) GetMdFilePath() string {
-	return p.dirpath + p.mdinitcontent
+	return p.dirpath + p.mdfilename
 }
 
 func (p *postAdder) GetMdFileName() string {
-	return p.mdinitcontent
+	return p.mdfilename
 }
 
 func (p *postAdder) GetJsonFileName() string {
@@ -76,11 +90,26 @@ func (p *postAdder) Read() {
 	p.mdfilename = p.readMdFileNameFromFs()
 	p.mdcontent = p.readMdContent()
 	p.imgjsonfilename = p.readJsonFileNameFromFs()
+	p.imgjsoncontent = p.readJsonContent()
+}
+
+func (p *postAdder) readJsonContent() string {
+	if len(p.GetJsonFileName()) > 0 {
+		return p.readFileContents(p.GetJsonFilePath())
+	}
+	return ""
 }
 
 func (p *postAdder) readMdContent() string {
-	if len(p.mdfilename) > 0 {
-		content := fs.ReadFileAsString(p.dirpath + p.mdfilename)
+	if len(p.GetMdFileName()) > 0 {
+		return p.readFileContents(p.GetMdFilePath())
+	}
+	return ""
+}
+
+func (p *postAdder) readFileContents(path string) string {
+	if len(path) > 0 {
+		content := fs.ReadFileAsString(path)
 		return strings.TrimSuffix(content, "\n")
 	}
 	return ""

@@ -45,12 +45,25 @@ func TestPostAdder_for_selecting_the_right_json_file(t *testing.T) {
 		t.Error("Expected", expected, "but got", actual)
 	}
 }
+
 func TestPostAdder_read_md_file_contents(t *testing.T) {
 	p := NewPostAdder("./testResources/textdir/")
 	p.Read()
 
 	expected := "Hello World!"
 	actual := p.(*postAdder).mdinitcontent
+
+	if expected != actual {
+		t.Error("Expected", expected, "but got", actual)
+	}
+}
+
+func TestPostAdder_read_json_file_contents(t *testing.T) {
+	p := NewPostAdder("./testResources/dir/")
+	p.Read()
+
+	expected := `{"hello":"world"}`
+	actual := p.(*postAdder).imgjsoncontent
 
 	if expected != actual {
 		t.Error("Expected", expected, "but got", actual)
