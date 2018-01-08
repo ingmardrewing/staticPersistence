@@ -6,6 +6,14 @@ import (
 	"github.com/ingmardrewing/fs"
 )
 
+type Persistence interface{}
+
+var (
+	persistence Persistence
+)
+
+func init() {}
+
 type PostAdder interface {
 	Read()
 	GetDir() string
