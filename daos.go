@@ -22,32 +22,32 @@ func FindJsonVersion(data []byte) int {
 
 // Post Dao
 func NewPostDAO(data []byte, path, filename string) DAO {
-	var p DAO
+	var d DAO
 	switch FindJsonVersion(data) {
 	default:
-		p = new(postDAOv0)
+		d = new(postDAOv0)
 	case v1:
-		p = new(postDAOv1)
+		d = new(postDAOv1)
 	}
-	p.(*docDAO).data = data
-	p.(*docDAO).path = path
-	p.(*docDAO).filename = filename
-	return p
+	d.Data(data)
+	d.FsPath(path)
+	d.FsFilename(filename)
+	return d
 }
 
 // marginalDAO
 func NewMarginalDAO(data []byte, path, filename string) DAO {
-	var p DAO
+	var d DAO
 	switch FindJsonVersion(data) {
 	default:
-		p = new(marginalDAOv0)
-	case 1:
-		p = new(marginalDAOv1)
+		d = new(postDAOv0)
+	case v1:
+		d = new(postDAOv1)
 	}
-	p.(*docDAO).data = data
-	p.(*docDAO).path = path
-	p.(*docDAO).filename = filename
-	return p
+	d.Data(data)
+	d.FsPath(path)
+	d.FsFilename(filename)
+	return d
 }
 
 // Json
@@ -72,6 +72,9 @@ func (j *Json) ReadInt(value []byte, keys ...string) int {
 type DAO interface {
 	ExtractFromJson()
 	FillJson() []byte
+	Data([]byte)
+	FsFilename(string)
+	FsPath(string)
 	Id(...int) int
 	Title(...string) string
 	TitlePlain(...string) string
@@ -95,6 +98,18 @@ type docDAO struct {
 	createDate, content, url,
 	path, filename,
 	fspath, fsfilename string
+}
+
+func (p *docDAO) FsPath(fspath string) {
+	p.fspath = fspath
+}
+
+func (p *docDAO) FsFilename(fsfilename string) {
+	p.fsfilename = fsfilename
+}
+
+func (p *docDAO) Data(data []byte) {
+	p.data = data
 }
 
 func (p *docDAO) Id(id ...int) int {
