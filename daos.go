@@ -12,7 +12,7 @@ const (
 )
 
 func FindJsonVersion(data []byte) int {
-	if len(data) == 0 {
+	if data == nil {
 		return v1
 	}
 	j := new(Json)
@@ -24,10 +24,10 @@ func FindJsonVersion(data []byte) int {
 func NewPostDAO(data []byte, path, filename string) DAO {
 	var d DAO
 	switch FindJsonVersion(data) {
-	default:
-		d = new(postDAOv0)
 	case v1:
 		d = new(postDAOv1)
+	default:
+		d = new(postDAOv0)
 	}
 	d.Data(data)
 	d.FsPath(path)
@@ -39,10 +39,10 @@ func NewPostDAO(data []byte, path, filename string) DAO {
 func NewMarginalDAO(data []byte, path, filename string) DAO {
 	var d DAO
 	switch FindJsonVersion(data) {
-	default:
-		d = new(postDAOv0)
 	case v1:
 		d = new(postDAOv1)
+	default:
+		d = new(postDAOv0)
 	}
 	d.Data(data)
 	d.FsPath(path)
@@ -227,10 +227,17 @@ func (p *postDAOv0) ExtractFromJson() {
 
 func (p *postDAOv0) FillJson() []byte {
 	json := fmt.Sprintf(p.Template(),
-		p.thumbUrl, p.imageUrl, p.filename,
-		p.id, p.createDate, p.url,
-		p.title, p.titlePlain, p.description,
-		p.content, p.disqusId)
+		p.thumbUrl,
+		p.imageUrl,
+		p.filename,
+		p.id,
+		p.createDate,
+		p.url,
+		p.title,
+		p.titlePlain,
+		p.description,
+		p.content,
+		p.disqusId)
 	return []byte(json)
 }
 
@@ -261,25 +268,32 @@ type postDAOv1 struct {
 }
 
 func (p *postDAOv1) ExtractFromJson() {
-	p.id = p.ReadInt(p.data, "post", "post_id")
-	p.title = p.ReadString(p.data, "post", "title")
+	p.id = p.ReadInt(p.data, "id")
+	p.title = p.ReadString(p.data, "title")
 	p.thumbUrl = p.ReadString(p.data, "thumbImg")
 	p.imageUrl = p.ReadString(p.data, "postImg")
-	p.description = p.ReadString(p.data, "post", "excerpt")
-	p.disqusId = p.ReadString(p.data, "post", "custom_fields", "dsq_thread_id", "[0]")
-	p.createDate = p.ReadString(p.data, "post", "date")
-	p.content = p.ReadString(p.data, "post", "content")
-	p.url = p.ReadString(p.data, "post", "url")
+	p.description = p.ReadString(p.data, "excerpt")
+	p.disqusId = p.ReadString(p.data, "dsq_thread_id")
+	p.createDate = p.ReadString(p.data, "date")
+	p.content = p.ReadString(p.data, "content")
+	p.url = p.ReadString(p.data, "url")
 	p.path = p.ReadString(p.data, "path")
 	p.filename = p.ReadString(p.data, "filename")
 }
 
 func (p *postDAOv1) FillJson() []byte {
 	json := fmt.Sprintf(p.Template(),
-		p.thumbUrl, p.imageUrl, p.filename,
-		p.id, p.createDate, p.url,
-		p.title, p.titlePlain, p.description,
-		p.content, p.disqusId)
+		p.thumbUrl,
+		p.imageUrl,
+		p.filename,
+		p.id,
+		p.createDate,
+		p.url,
+		p.title,
+		p.titlePlain,
+		p.description,
+		p.content,
+		p.disqusId)
 	return []byte(json)
 }
 
@@ -288,18 +302,14 @@ func (p *postDAOv1) Template() string {
 	"thumbImg":"%s",
 	"postImg":"%s",
 	"filename":"%s",
-	"post":{
-		"post_id":"%s",
-		"date":"%s",
-		"url":"%s",
-		"title":"%s",
-		"title_plain":"%s",
-		"excerpt":"%s",
-		"content":"%s",
-		"custom_fields":{
-			"dsq_thread_id":["%s"]
-		}
-	}
+	"id":%d,
+	"date":"%s",
+	"url":"%s",
+	"title":"%s",
+	"title_plain":"%s",
+	"excerpt":"%s",
+	"content":"%s",
+	"dsq_thread_id":"%s"
 }`
 }
 
