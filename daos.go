@@ -6,6 +6,50 @@ import (
 	"github.com/buger/jsonparser"
 )
 
+const (
+	v0 = iota
+	v1 = iota
+)
+
+func FindJsonVersion(data []byte) int {
+	if len(data) == 0 {
+		return v1
+	}
+	j := new(Json)
+	v := j.ReadInt(data, "version")
+	return v
+}
+
+// Post Dao
+func NewPostDAO(data []byte, path, filename string) DAO {
+	var p DAO
+	switch FindJsonVersion(data) {
+	default:
+		p = new(postDAOv0)
+	case v1:
+		p = new(postDAOv1)
+	}
+	p.(*docDAO).data = data
+	p.(*docDAO).path = path
+	p.(*docDAO).filename = filename
+	return p
+}
+
+// marginalDAO
+func NewMarginalDAO(data []byte, path, filename string) DAO {
+	var p DAO
+	switch FindJsonVersion(data) {
+	default:
+		p = new(marginalDAOv0)
+	case 1:
+		p = new(marginalDAOv1)
+	}
+	p.(*docDAO).data = data
+	p.(*docDAO).path = path
+	p.(*docDAO).filename = filename
+	return p
+}
+
 // Json
 type Json struct{}
 
@@ -137,7 +181,45 @@ func (p *docDAO) HtmlFilename(htmlFilename ...string) string {
 	return p.filename
 }
 
-func (p *docDAO) Template() string {
+func (p *docDAO) ExtractFromJson() {}
+func (p *docDAO) FillJson() []byte {
+	return []byte{}
+}
+
+// Post DAOs
+
+// Original data structure from wordpress migration
+// still having an unneccessary complex structure
+// staying here for historical reasons
+type postDAOv0 struct {
+	Json
+	docDAO
+}
+
+func (p *postDAOv0) ExtractFromJson() {
+	p.id = p.ReadInt(p.data, "post", "post_id")
+	p.title = p.ReadString(p.data, "post", "title")
+	p.thumbUrl = p.ReadString(p.data, "thumbImg")
+	p.imageUrl = p.ReadString(p.data, "postImg")
+	p.description = p.ReadString(p.data, "post", "excerpt")
+	p.disqusId = p.ReadString(p.data, "post", "custom_fields", "dsq_thread_id", "[0]")
+	p.createDate = p.ReadString(p.data, "post", "date")
+	p.content = p.ReadString(p.data, "post", "content")
+	p.url = p.ReadString(p.data, "post", "url")
+	p.path = p.ReadString(p.data, "path")
+	p.filename = p.ReadString(p.data, "filename")
+}
+
+func (p *postDAOv0) FillJson() []byte {
+	json := fmt.Sprintf(p.Template(),
+		p.thumbUrl, p.imageUrl, p.filename,
+		p.id, p.createDate, p.url,
+		p.title, p.titlePlain, p.description,
+		p.content, p.disqusId)
+	return []byte(json)
+}
+
+func (p *postDAOv0) Template() string {
 	return `{
 	"thumbImg":"%s",
 	"postImg":"%s",
@@ -157,21 +239,13 @@ func (p *docDAO) Template() string {
 }`
 }
 
-// Post Dawo
-func NewPostDAO(json []byte, path, filename string) DAO {
-	p := new(postDAO)
-	p.data = json
-	p.path = path
-	p.filename = filename
-	return p
-}
-
-type postDAO struct {
+// New json format v1
+type postDAOv1 struct {
 	Json
 	docDAO
 }
 
-func (p *postDAO) ExtractFromJson() {
+func (p *postDAOv1) ExtractFromJson() {
 	p.id = p.ReadInt(p.data, "post", "post_id")
 	p.title = p.ReadString(p.data, "post", "title")
 	p.thumbUrl = p.ReadString(p.data, "thumbImg")
@@ -185,7 +259,7 @@ func (p *postDAO) ExtractFromJson() {
 	p.filename = p.ReadString(p.data, "filename")
 }
 
-func (p *postDAO) FillJson() []byte {
+func (p *postDAOv1) FillJson() []byte {
 	json := fmt.Sprintf(p.Template(),
 		p.thumbUrl, p.imageUrl, p.filename,
 		p.id, p.createDate, p.url,
@@ -194,21 +268,37 @@ func (p *postDAO) FillJson() []byte {
 	return []byte(json)
 }
 
-// marginalDAO
-func NewMarginalDAO(json []byte, path, filename string) DAO {
-	p := new(marginalDAO)
-	p.data = json
-	p.fspath = path
-	p.fsfilename = filename
-	return p
+func (p *postDAOv1) Template() string {
+	return `{
+	"thumbImg":"%s",
+	"postImg":"%s",
+	"filename":"%s",
+	"post":{
+		"post_id":"%s",
+		"date":"%s",
+		"url":"%s",
+		"title":"%s",
+		"title_plain":"%s",
+		"excerpt":"%s",
+		"content":"%s",
+		"custom_fields":{
+			"dsq_thread_id":["%s"]
+		}
+	}
+}`
 }
 
-type marginalDAO struct {
+// Marginal DAOs
+
+// Original data structure from wordpress migration
+// still having an unneccessary complex structure
+// staying here for historical reasons
+type marginalDAOv0 struct {
 	Json
 	docDAO
 }
 
-func (p *marginalDAO) ExtractFromJson() {
+func (p *marginalDAOv0) ExtractFromJson() {
 	p.id = p.ReadInt(p.data, "page", "post_id")
 	p.title = p.ReadString(p.data, "title")
 	p.filename = p.ReadString(p.data, "filename")
@@ -221,11 +311,76 @@ func (p *marginalDAO) ExtractFromJson() {
 	p.path = p.ReadString(p.data, "path")
 }
 
-func (p *marginalDAO) FillJson() []byte {
+func (p *marginalDAOv0) FillJson() []byte {
 	json := fmt.Sprintf(p.Template(),
 		p.thumbUrl, p.imageUrl, p.filename,
 		p.id, p.createDate, p.url,
 		p.title, p.titlePlain, p.description,
 		p.content, p.disqusId)
 	return []byte(json)
+}
+
+func (p *marginalDAOv0) Template() string {
+	return `{
+  "title":"%s",
+  "title_plain":"%s",
+  "filename":"%s",
+  "content":"%s",
+  "page":{
+	  "id":%d,
+	  "slug":"ingmars-booklist",
+	  "url":"https:\/\/www.drewing.de\/blog\/",
+	  "status":"publish",
+	  "excerpt":"%s",
+    "date":"%s",
+  }
+}`
+}
+
+// Marginal DAOs
+
+// Original data structure from wordpress migration
+// still having an unneccessary complex structure
+// staying here for historical reasons
+type marginalDAOv1 struct {
+	Json
+	docDAO
+}
+
+func (p *marginalDAOv1) ExtractFromJson() {
+	p.id = p.ReadInt(p.data, "id")
+	p.title = p.ReadString(p.data, "title")
+	p.titlePlain = p.ReadString(p.data, "title_plain")
+	p.filename = p.ReadString(p.data, "filename")
+	p.description = p.ReadString(p.data, "description")
+	p.createDate = p.ReadString(p.data, "createDate")
+	p.content = p.ReadString(p.data, "content")
+	p.path = p.ReadString(p.data, "path")
+}
+
+func (p *marginalDAOv1) FillJson() []byte {
+	json := fmt.Sprintf(p.Template(),
+		p.id,
+		p.filename,
+		p.createDate,
+		p.url,
+		p.title,
+		p.titlePlain,
+		p.description,
+		p.content)
+	return []byte(json)
+}
+
+func (p *marginalDAOv1) Template() string {
+	return `{
+	"version":1,
+	"id":%d,
+	"filename":"%s",
+	"createDate":"%s",
+	"url":"%s",
+	"title":"%s",
+	"title_plain":"%s",
+	"descriptions":"%s",
+	"content":"%s"
+}`
 }
