@@ -299,6 +299,7 @@ func (p *postDAOv1) FillJson() []byte {
 
 func (p *postDAOv1) Template() string {
 	return `{
+	"version":1,
 	"thumbImg":"%s",
 	"postImg":"%s",
 	"filename":"%s",
