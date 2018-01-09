@@ -49,19 +49,23 @@ func TestNewPostDAO_without_json_data_returns_newest_version(t *testing.T) {
 	"content":"",
 	"dsq_thread_id":""
 }`
+
+	dto := NewPostDto()
+	dto.Id(0)
+	dto.Title("")
+	dto.TitlePlain("")
+	dto.ThumbUrl("")
+	dto.ImageUrl("")
+	dto.Description("")
+	dto.DisqusId("")
+	dto.CreateDate("")
+	dto.Content("")
+	dto.Url("")
+	dto.PathFromDocRoot("")
+	dto.Filename("")
+
 	d := NewPostDAO(nil, "", "")
-	d.Id(0)
-	d.Title("")
-	d.TitlePlain("")
-	d.ThumbUrl("")
-	d.ImageUrl("")
-	d.Description("")
-	d.DisqusId("")
-	d.CreateDate("")
-	d.Content("")
-	d.Url("")
-	d.PathFromDocRoot("")
-	d.HtmlFilename("")
+	d.Dto(dto)
 
 	actual := string(d.FillJson())
 
