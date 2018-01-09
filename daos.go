@@ -16,7 +16,7 @@ func FindJsonVersion(data []byte) int {
 	return v
 }
 
-func NewPostDto() *docDTO {
+func NewDto() *docDTO {
 	return new(docDTO)
 }
 
@@ -29,7 +29,7 @@ func NewPostDAO(data []byte, path, filename string) DAO {
 	default:
 		d = new(postDAOv0)
 	}
-	dto := NewPostDto()
+	dto := NewDto()
 	dto.FsPath(path)
 	dto.Filename(filename)
 
@@ -44,11 +44,11 @@ func NewMarginalDAO(data []byte, path, filename string) DAO {
 	var d DAO
 	switch FindJsonVersion(data) {
 	case v1:
-		d = new(postDAOv1)
+		d = new(marginalDAOv1)
 	default:
-		d = new(postDAOv0)
+		d = new(marginalDAOv0)
 	}
-	dto := NewPostDto()
+	dto := NewDto()
 	dto.FsPath(path)
 	dto.Filename(filename)
 
@@ -78,7 +78,7 @@ func (j *Json) ReadInt(value []byte, keys ...string) int {
 }
 
 type DAO interface {
-	Dto(dto ...DTO) DTO
+	Dto(...DTO) DTO
 	ExtractFromJson()
 	FillJson() []byte
 	Data([]byte)

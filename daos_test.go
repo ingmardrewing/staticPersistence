@@ -50,7 +50,7 @@ func TestNewPostDAO_without_json_data_returns_newest_version(t *testing.T) {
 	"dsq_thread_id":""
 }`
 
-	dto := NewPostDto()
+	dto := NewDto()
 	dto.Id(0)
 	dto.Title("")
 	dto.TitlePlain("")
@@ -72,5 +72,4 @@ func TestNewPostDAO_without_json_data_returns_newest_version(t *testing.T) {
 	if actual != expected {
 		t.Error("Expected", expected, ", but got", actual)
 	}
-
 }
