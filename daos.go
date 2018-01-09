@@ -16,6 +16,10 @@ func FindJsonVersion(data []byte) int {
 	return v
 }
 
+func NewPostDto() *docDTO {
+	return new(docDTO)
+}
+
 // Post Dao
 func NewPostDAO(data []byte, path, filename string) DAO {
 	var d DAO
@@ -25,6 +29,7 @@ func NewPostDAO(data []byte, path, filename string) DAO {
 	default:
 		d = new(postDAOv0)
 	}
+	d.Dto(NewPostDto())
 	d.Data(data)
 	d.FsPath(path)
 	d.FsFilename(filename)
@@ -83,6 +88,17 @@ type DAO interface {
 	Url(...string) string
 	PathFromDocRoot(...string) string
 	HtmlFilename(...string) string
+}
+
+// docDtO
+type docDTO struct {
+	data []byte
+	id   int
+	title, titlePlain, thumbUrl,
+	imageUrl, description, disqusId,
+	createDate, content, url,
+	path, filename,
+	fspath, fsfilename string
 }
 
 // docDAO
