@@ -36,6 +36,7 @@ func TestFindVersion_returns_one_if_new_empty_dao_is_needed(t *testing.T) {
 
 func TestNewPostDAO_without_json_data_returns_newest_version(t *testing.T) {
 	expected := `{
+	"version":1,
 	"thumbImg":"",
 	"postImg":"",
 	"filename":"",
