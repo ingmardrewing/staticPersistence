@@ -1,6 +1,9 @@
 package staticPersistence
 
-import "github.com/buger/jsonparser"
+import (
+	"github.com/buger/jsonparser"
+	"github.com/ingmardrewing/fs"
+)
 
 const (
 	v0 = iota
@@ -18,6 +21,26 @@ func FindJsonVersion(data []byte) int {
 
 func NewDto() *docDTO {
 	return new(docDTO)
+}
+
+func WriteMarginalDtoToJson(dto DTO, path, filename string) {
+	dao := NewMarginalDAO(nil, path, filename)
+	dao.Dto(dto)
+	writeJson(dao.FillJson(), path, filename)
+}
+
+func WritePostDtoToJson(dto DTO, path, filename string) {
+	dao := NewPostDAO(nil, path, filename)
+	dao.Dto(dto)
+	writeJson(dao.FillJson(), path, filename)
+}
+
+func writeJson(json []byte, path, filename string) {
+	fc := fs.NewFileContainer()
+	fc.SetDataAsString(string(json))
+	fc.SetPath(path)
+	fc.SetFilename(filename)
+	fc.Write()
 }
 
 // Post Dao
