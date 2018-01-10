@@ -1,10 +1,58 @@
 package staticPersistence
 
 import (
+	"fmt"
 	"strings"
 
 	"github.com/ingmardrewing/fs"
 )
+
+func ReadMarginals(marginalsDir string) []DTO {
+	files := fs.ReadDirEntriesEndingWith(marginalsDir, "json")
+	dtos := []DTO{}
+	for _, f := range files {
+		path := marginalsDir + f
+		json := fs.ReadByteArrayFromFile(path)
+		dao := NewMarginalDAO(json, marginalsDir, f)
+		dao.ExtractFromJson()
+		dtos = append(dtos, dao.Dto())
+	}
+	return dtos
+}
+
+func ReadPosts(postsDir string) []DTO {
+	files := fs.ReadDirEntriesEndingWith(postsDir, "json")
+	dtos := []DTO{}
+	for _, f := range files {
+		path := postsDir + f
+		fmt.Println(path)
+		json := fs.ReadByteArrayFromFile(path)
+		dao := NewPostDAO(json, postsDir, f)
+		dao.ExtractFromJson()
+		dtos = append(dtos, dao.Dto())
+	}
+	return dtos
+}
+
+func WriteMarginalDtoToJson(dto DTO, path, filename string) {
+	dao := NewMarginalDAO(nil, path, filename)
+	dao.Dto(dto)
+	writeJson(dao.FillJson(), path, filename)
+}
+
+func WritePostDtoToJson(dto DTO, path, filename string) {
+	dao := NewPostDAO(nil, path, filename)
+	dao.Dto(dto)
+	writeJson(dao.FillJson(), path, filename)
+}
+
+func writeJson(json []byte, path, filename string) {
+	fc := fs.NewFileContainer()
+	fc.SetDataAsString(string(json))
+	fc.SetPath(path)
+	fc.SetFilename(filename)
+	fc.Write()
+}
 
 type Persistence interface{}
 
