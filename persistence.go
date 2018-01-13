@@ -1,19 +1,16 @@
 package staticPersistence
 
 import (
-	"fmt"
 	"strings"
 
 	"github.com/ingmardrewing/fs"
 )
 
 func ReadMarginals(marginalsDir string) []DTO {
-	files := fs.ReadDirEntriesEndingWith(marginalsDir, "json")
+	fileContainers := ReadJsonFilesFromDir(marginalsDir)
 	dtos := []DTO{}
-	for _, f := range files {
-		path := marginalsDir + f
-		json := fs.ReadByteArrayFromFile(path)
-		dao := NewMarginalDAO(json, marginalsDir, f)
+	for _, fc := range fileContainers {
+		dao := NewMarginalDAO(fc.GetData(), fc.GetPath(), fc.GetFilename())
 		dao.ExtractFromJson()
 		dtos = append(dtos, dao.Dto())
 	}
@@ -21,17 +18,27 @@ func ReadMarginals(marginalsDir string) []DTO {
 }
 
 func ReadPosts(postsDir string) []DTO {
-	files := fs.ReadDirEntriesEndingWith(postsDir, "json")
+	fileContainers := ReadJsonFilesFromDir(postsDir)
 	dtos := []DTO{}
-	for _, f := range files {
-		path := postsDir + f
-		fmt.Println(path)
-		json := fs.ReadByteArrayFromFile(path)
-		dao := NewPostDAO(json, postsDir, f)
+	for _, fc := range fileContainers {
+		dao := NewPostDAO(fc.GetData(), fc.GetPath(), fc.GetFilename())
 		dao.ExtractFromJson()
 		dtos = append(dtos, dao.Dto())
 	}
 	return dtos
+}
+
+func ReadJsonFilesFromDir(path string) []fs.FileContainer {
+	files := fs.ReadDirEntriesEndingWith(path, "json")
+	fileContainers := []fs.FileContainer{}
+	for _, filename := range files {
+		fc := fs.NewFileContainer()
+		fc.SetPath(path)
+		fc.SetFilename(filename)
+		fc.Read()
+		fileContainers = append(fileContainers, fc)
+	}
+	return fileContainers
 }
 
 func WriteMarginalDtoToJson(dto DTO, path, filename string) {
@@ -124,7 +131,7 @@ func (p *postAdder) GetJsonFileName() string {
 }
 
 func (p *postAdder) GetJsonFilePath() string {
-	return p.dirpath + p.imgjsonfilename
+	return p.dirpath
 }
 
 func (p *postAdder) GetImgFileName() string {
@@ -151,24 +158,26 @@ func (p *postAdder) Read() {
 
 func (p *postAdder) readJsonContent() string {
 	if len(p.GetJsonFileName()) > 0 {
-		return p.readFileContents(p.GetJsonFilePath())
+		return p.readFileContents(p.dirpath, p.imgjsonfilename)
 	}
 	return ""
 }
 
 func (p *postAdder) readMdContent() string {
 	if len(p.GetMdFileName()) > 0 {
-		return p.readFileContents(p.GetMdFilePath())
+		return p.readFileContents(p.dirpath, p.mdfilename)
 	}
 	return ""
 }
 
-func (p *postAdder) readFileContents(path string) string {
-	if len(path) > 0 {
-		content := fs.ReadFileAsString(path)
-		return strings.TrimSuffix(content, "\n")
-	}
-	return ""
+func (p *postAdder) readFileContents(path, file string) string {
+	fc := fs.NewFileContainer()
+	fc.SetPath(path)
+	fc.SetFilename(file)
+	fc.Read()
+
+	content := fc.GetDataAsString()
+	return strings.TrimSuffix(content, "\n")
 }
 
 func (p *postAdder) readImageFileNameFromFs() string {
