@@ -1,6 +1,10 @@
 package staticPersistence
 
-import "github.com/buger/jsonparser"
+import (
+	"strings"
+
+	"github.com/buger/jsonparser"
+)
 
 const (
 	v0 = iota
@@ -95,6 +99,7 @@ type DTO interface {
 	CreateDate(...string) string
 	Content(...string) string
 	Url(...string) string
+	Domain() string
 	PathFromDocRoot(...string) string
 	Filename(...string) string
 }
@@ -131,6 +136,14 @@ func (p *docDTO) Title(title ...string) string {
 		p.title = title[0]
 	}
 	return p.title
+}
+
+func (p *docDTO) Domain() string {
+	if len(p.url) > 0 {
+		parts := strings.Split(p.url, "/")
+		return strings.Join(parts[0:3], "/")
+	}
+	return ""
 }
 
 func (p *docDTO) TitlePlain(titlePlain ...string) string {

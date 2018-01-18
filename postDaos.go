@@ -1,6 +1,9 @@
 package staticPersistence
 
-import "fmt"
+import (
+	"fmt"
+	"strings"
+)
 
 // Post DAOs
 
@@ -22,9 +25,14 @@ func (p *postDAOv0) ExtractFromJson() {
 	p.dto.DisqusId(p.ReadString(p.data, "post", "custom_fields", "dsq_thread_id", "[0]"))
 	p.dto.CreateDate(p.ReadString(p.data, "post", "date"))
 	p.dto.Content(p.ReadString(p.data, "post", "content"))
+
 	p.dto.Url(p.ReadString(p.data, "post", "url"))
-	p.dto.PathFromDocRoot(p.ReadString(p.data, "path"))
-	p.dto.Filename(p.ReadString(p.data, "filename"))
+
+	parts := strings.Split(p.dto.Url(), "/")
+	path := strings.Join(parts[3:], "/")
+	p.dto.PathFromDocRoot(path)
+
+	p.dto.Filename("index.html")
 }
 
 func (p *postDAOv0) Data(data []byte) {

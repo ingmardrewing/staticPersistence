@@ -1,6 +1,7 @@
 package staticPersistence
 
 import (
+	"fmt"
 	"strings"
 
 	"github.com/ingmardrewing/fs"
@@ -18,6 +19,7 @@ func ReadMarginals(marginalsDir string) []DTO {
 }
 
 func ReadPosts(postsDir string) []DTO {
+	fmt.Println("staticPersistence.ReadPosts")
 	fileContainers := ReadJsonFilesFromDir(postsDir)
 	dtos := []DTO{}
 	for _, fc := range fileContainers {
@@ -29,7 +31,9 @@ func ReadPosts(postsDir string) []DTO {
 }
 
 func ReadJsonFilesFromDir(path string) []fs.FileContainer {
+	fmt.Println("staticPersistence.ReadJsonFilesFromDir")
 	files := fs.ReadDirEntriesEndingWith(path, "json")
+	fmt.Println("Number of json files read: ", len(files))
 	fileContainers := []fs.FileContainer{}
 	for _, filename := range files {
 		fc := fs.NewFileContainer()
