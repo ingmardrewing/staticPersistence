@@ -27,14 +27,15 @@ func (p *marginalDAOv0) Dto(dto ...DTO) DTO {
 func (p *marginalDAOv0) ExtractFromJson() {
 	p.dto.Id(p.ReadInt(p.data, "page", "post_id"))
 	p.dto.Title(p.ReadString(p.data, "title"))
-	p.dto.Filename(p.ReadString(p.data, "filename"))
 	p.dto.ThumbUrl(p.ReadString(p.data, "thumbImg"))
 	p.dto.ImageUrl(p.ReadString(p.data, "postImg"))
 	p.dto.Description(p.ReadString(p.data, "page", "excerpt"))
 	p.dto.DisqusId(p.ReadString(p.data, "page", "custom_fields", "dsq_thread_id", "[0]"))
 	p.dto.CreateDate(p.ReadString(p.data, "page", "date"))
 	p.dto.Content(p.ReadString(p.data, "content"))
+
 	p.dto.PathFromDocRoot(p.ReadString(p.data, "path"))
+	p.dto.Filename(p.ReadString(p.data, "filename"))
 }
 
 func (p *marginalDAOv0) FillJson() []byte {
@@ -96,16 +97,18 @@ func (p *marginalDAOv1) ExtractFromJson() {
 	p.dto.Id(p.ReadInt(p.data, "id"))
 	p.dto.Title(p.ReadString(p.data, "title"))
 	p.dto.TitlePlain(p.ReadString(p.data, "title_plain"))
-	p.dto.Filename(p.ReadString(p.data, "filename"))
 	p.dto.Description(p.ReadString(p.data, "description"))
 	p.dto.CreateDate(p.ReadString(p.data, "createDate"))
 	p.dto.Content(p.ReadString(p.data, "content"))
+
 	p.dto.PathFromDocRoot(p.ReadString(p.data, "path"))
+	p.dto.Filename(p.ReadString(p.data, "filename"))
 }
 
 func (p *marginalDAOv1) FillJson() []byte {
 	json := fmt.Sprintf(p.Template(),
 		p.dto.Id(),
+		p.dto.PathFromDocRoot(),
 		p.dto.Filename(),
 		p.dto.CreateDate(),
 		p.dto.Url(),
@@ -120,12 +123,13 @@ func (p *marginalDAOv1) Template() string {
 	return `{
 	"version":1,
 	"id":%d,
+	"path":"%s",
 	"filename":"%s",
 	"createDate":"%s",
 	"url":"%s",
 	"title":"%s",
 	"title_plain":"%s",
-	"descriptions":"%s",
+	"description":"%s",
 	"content":"%s"
 }`
 }
