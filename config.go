@@ -31,5 +31,6 @@ func (c *Config) Read(keys ...string) string {
 }
 
 func (c *Config) ReadConfigFile(path string) {
-	c.data = fs.ReadByteArrayFromFile(path)
+	bytes := fs.ReadByteArrayFromFile(path)
+	c.data = bytes
 }
