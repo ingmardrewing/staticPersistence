@@ -62,7 +62,7 @@ func TestNewPostDAO_without_json_data_returns_newest_version(t *testing.T) {
 	dto.Content("")
 	dto.Url("")
 	dto.PathFromDocRoot("")
-	dto.Filename("")
+	dto.HtmlFilename("")
 
 	d := NewPostDAO(nil, "", "")
 	d.Dto(dto)
