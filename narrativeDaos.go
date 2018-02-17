@@ -4,15 +4,11 @@ import "fmt"
 
 // narrativeDAO
 func NewNarrativeDAO(data []byte, path, filename string) DAO {
-	var d DAO
-	switch FindJsonVersion(data) {
-	default:
-		d = new(narrativeDAOv0)
-	}
 	dto := NewDto()
 	dto.FsPath(path)
 	dto.HtmlFilename(filename)
 
+	d := new(narrativeDAOv0)
 	d.Dto(dto)
 	d.Data(data)
 
@@ -48,6 +44,7 @@ func (p *narrativeDAOv0) ExtractFromJson() {
 	p.dto.DisqusId(p.ReadString(p.data, "disqusId"))
 	p.dto.CreateDate(p.ReadString(p.data, "page", "date"))
 	p.dto.Content("")
+
 	p.dto.PathFromDocRoot(p.ReadString(p.data, "path"))
 	p.dto.HtmlFilename("index.html")
 }
@@ -76,20 +73,4 @@ func (p *narrativeDAOv0) Template() string {
 	 "disqusId":"%s",
 	 "act":"%s"
  }`
-	/*
-			return `{
-		  "title":"%s",
-		  "title_plain":"%s",
-		  "filename":"%s",
-		  "content":"%s",
-		  "page":{
-			  "id":%d,
-			  "slug":"ingmars-booklist",
-			  "url":"https:\/\/www.drewing.de\/blog\/",
-			  "status":"publish",
-			  "excerpt":"%s",
-		    "date":"%s",
-		  }
-		}`
-	*/
 }

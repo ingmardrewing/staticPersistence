@@ -31,6 +31,17 @@ type DAO interface {
 	Data([]byte)
 }
 
+func ReadNarrativePages(pagesDir string) []DTO {
+	fileContainers := ReadJsonFilesFromDir(pagesDir)
+	dtos := []DTO{}
+	for _, fc := range fileContainers {
+		dao := NewNarrativeDAO(fc.GetData(), fc.GetPath(), fc.GetFilename())
+		dao.ExtractFromJson()
+		dtos = append(dtos, dao.Dto())
+	}
+	return dtos
+}
+
 func ReadPages(pagesDir string) []DTO {
 	fileContainers := ReadJsonFilesFromDir(pagesDir)
 	dtos := []DTO{}
