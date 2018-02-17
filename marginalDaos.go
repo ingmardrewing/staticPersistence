@@ -2,7 +2,24 @@ package staticPersistence
 
 import "fmt"
 
-// Marginal DAOs
+// marginalDAO
+func NewMarginalDAO(data []byte, path, filename string) DAO {
+	var d DAO
+	switch FindJsonVersion(data) {
+	case v1:
+		d = new(marginalDAOv1)
+	default:
+		d = new(marginalDAOv0)
+	}
+	dto := NewDto()
+	dto.FsPath(path)
+	dto.HtmlFilename(filename)
+
+	d.Dto(dto)
+	d.Data(data)
+
+	return d
+}
 
 // Original data structure from wordpress migration
 // still having an unneccessary complex structure

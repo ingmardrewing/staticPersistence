@@ -2,20 +2,8 @@ package staticPersistence
 
 import "strings"
 
-type DTO interface {
-	Id(...int) int
-	Title(...string) string
-	TitlePlain(...string) string
-	ThumbUrl(...string) string
-	ImageUrl(...string) string
-	Description(...string) string
-	DisqusId(...string) string
-	CreateDate(...string) string
-	Content(...string) string
-	Url(...string) string
-	Domain() string
-	PathFromDocRoot(...string) string
-	HtmlFilename(...string) string
+func NewDto() *docDTO {
+	return new(docDTO)
 }
 
 // docDtO
