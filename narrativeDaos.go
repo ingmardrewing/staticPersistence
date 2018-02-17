@@ -49,7 +49,7 @@ func (p *narrativeDAOv0) ExtractFromJson() {
 	p.dto.CreateDate(p.ReadString(p.data, "page", "date"))
 	p.dto.Content("")
 	p.dto.PathFromDocRoot(p.ReadString(p.data, "path"))
-	p.dto.HtmlFilename(p.ReadString(p.data, "index.html"))
+	p.dto.HtmlFilename("index.html")
 }
 
 func (p *narrativeDAOv0) FillJson() []byte {
