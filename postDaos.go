@@ -6,6 +6,23 @@ import (
 )
 
 // Post DAOs
+func NewPostDAO(data []byte, path, filename string) DAO {
+	var d DAO
+	switch FindJsonVersion(data) {
+	case v1:
+		d = new(postDAOv1)
+	default:
+		d = new(postDAOv0)
+	}
+	dto := NewDto()
+	dto.FsPath(path)
+	dto.HtmlFilename(filename)
+
+	d.Dto(dto)
+	d.Data(data)
+
+	return d
+}
 
 // Original data structure from wordpress migration
 // still having an unneccessary complex structure
@@ -32,7 +49,7 @@ func (p *postDAOv0) ExtractFromJson() {
 	path := strings.Join(parts[3:], "/")
 	p.dto.PathFromDocRoot(path)
 
-	p.dto.Filename("index.html")
+	p.dto.HtmlFilename("index.html")
 }
 
 func (p *postDAOv0) Data(data []byte) {
@@ -50,7 +67,7 @@ func (p *postDAOv0) FillJson() []byte {
 	json := fmt.Sprintf(p.Template(),
 		p.dto.ThumbUrl(),
 		p.dto.ImageUrl(),
-		p.dto.Filename(),
+		p.dto.HtmlFilename(),
 		p.dto.Id(),
 		p.dto.CreateDate(),
 		p.dto.Url(),
@@ -104,7 +121,7 @@ func (p *postDAOv1) ExtractFromJson() {
 	path := strings.Join(parts[3:], "/")
 	//p.dto.FsPath(path)
 	p.dto.PathFromDocRoot(path)
-	p.dto.Filename("index.html")
+	p.dto.HtmlFilename("index.html")
 }
 
 func (p *postDAOv1) Data(data []byte) {
@@ -122,7 +139,7 @@ func (p *postDAOv1) FillJson() []byte {
 	json := fmt.Sprintf(p.Template(),
 		p.dto.ThumbUrl(),
 		p.dto.ImageUrl(),
-		p.dto.Filename(),
+		p.dto.HtmlFilename(),
 		p.dto.Id(),
 		p.dto.CreateDate(),
 		p.dto.Url(),

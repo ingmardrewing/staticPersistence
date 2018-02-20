@@ -2,6 +2,57 @@ package staticPersistence
 
 import "github.com/ingmardrewing/fs"
 
+// dao versions
+const (
+	v0 = iota
+	v1 = iota
+)
+
+type DTO interface {
+	Id(...int) int
+	Title(...string) string
+	TitlePlain(...string) string
+	ThumbUrl(...string) string
+	ImageUrl(...string) string
+	Description(...string) string
+	DisqusId(...string) string
+	CreateDate(...string) string
+	Content(...string) string
+	Url(...string) string
+	Domain() string
+	PathFromDocRoot(...string) string
+	HtmlFilename(...string) string
+}
+
+type DAO interface {
+	Dto(...DTO) DTO
+	ExtractFromJson()
+	FillJson() []byte
+	Data([]byte)
+}
+
+func ReadNarrativePages(pagesDir string) []DTO {
+	fileContainers := ReadJsonFilesFromDir(pagesDir)
+	dtos := []DTO{}
+	for _, fc := range fileContainers {
+		dao := NewNarrativeDAO(fc.GetData(), fc.GetPath(), fc.GetFilename())
+		dao.ExtractFromJson()
+		dtos = append(dtos, dao.Dto())
+	}
+	return dtos
+}
+
+func ReadPages(pagesDir string) []DTO {
+	fileContainers := ReadJsonFilesFromDir(pagesDir)
+	dtos := []DTO{}
+	for _, fc := range fileContainers {
+		dao := NewPageDAO(fc.GetData(), fc.GetPath(), fc.GetFilename())
+		dao.ExtractFromJson()
+		dtos = append(dtos, dao.Dto())
+	}
+	return dtos
+}
+
 func ReadMarginals(marginalsDir string) []DTO {
 	fileContainers := ReadJsonFilesFromDir(marginalsDir)
 	dtos := []DTO{}

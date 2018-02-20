@@ -2,6 +2,15 @@ package staticPersistence
 
 import "github.com/buger/jsonparser"
 
+func FindJsonVersion(data []byte) int {
+	if data == nil {
+		return v1
+	}
+	j := new(Json)
+	v := j.ReadInt(data, "version")
+	return v
+}
+
 // Json
 type Json struct{}
 

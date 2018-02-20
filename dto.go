@@ -2,83 +2,8 @@ package staticPersistence
 
 import "strings"
 
-const (
-	v0 = iota
-	v1 = iota
-)
-
-func FindJsonVersion(data []byte) int {
-	if data == nil {
-		return v1
-	}
-	j := new(Json)
-	v := j.ReadInt(data, "version")
-	return v
-}
-
 func NewDto() *docDTO {
 	return new(docDTO)
-}
-
-// Post Dao
-func NewPostDAO(data []byte, path, filename string) DAO {
-	var d DAO
-	switch FindJsonVersion(data) {
-	case v1:
-		d = new(postDAOv1)
-	default:
-		d = new(postDAOv0)
-	}
-	dto := NewDto()
-	dto.FsPath(path)
-	dto.Filename(filename)
-
-	d.Dto(dto)
-	d.Data(data)
-
-	return d
-}
-
-// marginalDAO
-func NewMarginalDAO(data []byte, path, filename string) DAO {
-	var d DAO
-	switch FindJsonVersion(data) {
-	case v1:
-		d = new(marginalDAOv1)
-	default:
-		d = new(marginalDAOv0)
-	}
-	dto := NewDto()
-	dto.FsPath(path)
-	dto.Filename(filename)
-
-	d.Dto(dto)
-	d.Data(data)
-
-	return d
-}
-
-type DAO interface {
-	Dto(...DTO) DTO
-	ExtractFromJson()
-	FillJson() []byte
-	Data([]byte)
-}
-
-type DTO interface {
-	Id(...int) int
-	Title(...string) string
-	TitlePlain(...string) string
-	ThumbUrl(...string) string
-	ImageUrl(...string) string
-	Description(...string) string
-	DisqusId(...string) string
-	CreateDate(...string) string
-	Content(...string) string
-	Url(...string) string
-	Domain() string
-	PathFromDocRoot(...string) string
-	Filename(...string) string
 }
 
 // docDtO
@@ -87,18 +12,18 @@ type docDTO struct {
 	title, titlePlain, thumbUrl,
 	imageUrl, description, disqusId,
 	createDate, content, url,
-	path, fspath, filename string
+	path, fspath, htmlfilename string
 }
 
 func (p *docDTO) FsPath(fspath string) {
 	p.fspath = fspath
 }
 
-func (p *docDTO) Filename(filename ...string) string {
-	if len(filename) > 0 {
-		p.filename = filename[0]
+func (p *docDTO) HtmlFilename(htmlfilename ...string) string {
+	if len(htmlfilename) > 0 {
+		p.htmlfilename = htmlfilename[0]
 	}
-	return p.filename
+	return p.htmlfilename
 }
 
 func (p *docDTO) Id(id ...int) int {

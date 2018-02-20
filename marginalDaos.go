@@ -2,7 +2,24 @@ package staticPersistence
 
 import "fmt"
 
-// Marginal DAOs
+// marginalDAO
+func NewMarginalDAO(data []byte, path, filename string) DAO {
+	var d DAO
+	switch FindJsonVersion(data) {
+	case v1:
+		d = new(marginalDAOv1)
+	default:
+		d = new(marginalDAOv0)
+	}
+	dto := NewDto()
+	dto.FsPath(path)
+	dto.HtmlFilename(filename)
+
+	d.Dto(dto)
+	d.Data(data)
+
+	return d
+}
 
 // Original data structure from wordpress migration
 // still having an unneccessary complex structure
@@ -35,14 +52,14 @@ func (p *marginalDAOv0) ExtractFromJson() {
 	p.dto.Content(p.ReadString(p.data, "content"))
 
 	p.dto.PathFromDocRoot(p.ReadString(p.data, "path"))
-	p.dto.Filename(p.ReadString(p.data, "filename"))
+	p.dto.HtmlFilename(p.ReadString(p.data, "filename"))
 }
 
 func (p *marginalDAOv0) FillJson() []byte {
 	json := fmt.Sprintf(p.Template(),
 		p.dto.ThumbUrl(),
 		p.dto.ImageUrl(),
-		p.dto.Filename(),
+		p.dto.HtmlFilename(),
 		p.dto.Id(),
 		p.dto.CreateDate(),
 		p.dto.Url(),
@@ -102,14 +119,14 @@ func (p *marginalDAOv1) ExtractFromJson() {
 	p.dto.Content(p.ReadString(p.data, "content"))
 
 	p.dto.PathFromDocRoot(p.ReadString(p.data, "path"))
-	p.dto.Filename(p.ReadString(p.data, "filename"))
+	p.dto.HtmlFilename(p.ReadString(p.data, "filename"))
 }
 
 func (p *marginalDAOv1) FillJson() []byte {
 	json := fmt.Sprintf(p.Template(),
 		p.dto.Id(),
 		p.dto.PathFromDocRoot(),
-		p.dto.Filename(),
+		p.dto.HtmlFilename(),
 		p.dto.CreateDate(),
 		p.dto.Url(),
 		p.dto.Title(),
