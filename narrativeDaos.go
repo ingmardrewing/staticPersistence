@@ -1,6 +1,11 @@
 package staticPersistence
 
-import "fmt"
+import (
+	"fmt"
+	"strconv"
+	"strings"
+	"time"
+)
 
 // narrativeDAO
 func NewNarrativeDAO(data []byte, path, filename string) DAO {
@@ -42,11 +47,22 @@ func (p *narrativeDAOv0) ExtractFromJson() {
 	p.dto.ImageUrl(p.ReadString(p.data, "imgUrl"))
 	p.dto.Description(p.ReadString(p.data, "description"))
 	p.dto.DisqusId(p.ReadString(p.data, "disqusId"))
-	p.dto.CreateDate(p.ReadString(p.data, "page", "date"))
-	p.dto.Content("")
+	p.dto.CreateDate(p.getDateFromFSPath())
+	p.dto.Content(p.ReadString(p.data, "act"))
 
 	p.dto.PathFromDocRoot(p.ReadString(p.data, "path"))
 	p.dto.HtmlFilename("index.html")
+}
+
+func (p *narrativeDAOv0) getDateFromFSPath() string {
+	fp := p.ReadString(p.data, "path")
+	parts := strings.Split(fp, "/")
+	loc, _ := time.LoadLocation("Europe/Berlin")
+	y, _ := strconv.Atoi(parts[1])
+	m, _ := strconv.Atoi(parts[2])
+	d, _ := strconv.Atoi(parts[3])
+	date := time.Date(y, time.Month(m), d, 20, 0, 0, 0, loc)
+	return date.Format(time.RFC1123Z)
 }
 
 func (p *narrativeDAOv0) FillJson() []byte {

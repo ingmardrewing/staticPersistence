@@ -46,7 +46,7 @@ func (p *postDAOv0) ExtractFromJson() {
 	p.dto.Url(p.ReadString(p.data, "post", "url"))
 
 	parts := strings.Split(p.dto.Url(), "/")
-	path := strings.Join(parts[3:], "/")
+	path := strings.Join(parts[4:], "/")
 	p.dto.PathFromDocRoot(path)
 
 	p.dto.HtmlFilename("index.html")
@@ -118,7 +118,7 @@ func (p *postDAOv1) ExtractFromJson() {
 	p.dto.Url(p.ReadString(p.data, "url"))
 
 	parts := strings.Split(p.dto.Url(), "/")
-	path := strings.Join(parts[3:], "/")
+	path := strings.Join(parts[4:], "/")
 	//p.dto.FsPath(path)
 	p.dto.PathFromDocRoot(path)
 	p.dto.HtmlFilename("index.html")
