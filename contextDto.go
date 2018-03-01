@@ -2,7 +2,7 @@ package staticPersistence
 
 import "github.com/ingmardrewing/staticIntf"
 
-func NewContextDto(twitterHandle, topic, tags, site, cardType, section, fbPage, twitterPage, rss, css, domain, disqus string) staticIntf.ContextDto {
+func NewContextDto(twitterHandle, topic, tags, site, cardType, section, fbPage, twitterPage, rss, css, disqus string) staticIntf.ContextDto {
 	dto := new(contextDto)
 	dto.TwitterHandle(twitterHandle)
 	dto.Topic(topic)
@@ -14,7 +14,6 @@ func NewContextDto(twitterHandle, topic, tags, site, cardType, section, fbPage, 
 	dto.TwitterPage(twitterPage)
 	dto.Rss(rss)
 	dto.Css(css)
-	dto.Domain(domain)
 	dto.DisqusId(disqus)
 	return dto
 }
