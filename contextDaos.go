@@ -28,5 +28,6 @@ func (c *contextDao) Dto() staticIntf.ContextDto {
 		c.config.Context.TwitterPage,
 		c.config.Deploy.Rss,
 		c.config.Deploy.CssFileName,
-		c.config.Context.DisqusShortname)
+		c.config.Context.DisqusShortname,
+		c.config.Deploy.TargetDir)
 }

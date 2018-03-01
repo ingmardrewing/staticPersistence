@@ -2,7 +2,7 @@ package staticPersistence
 
 import "github.com/ingmardrewing/staticIntf"
 
-func NewContextDto(twitterHandle, topic, tags, site, cardType, section, fbPage, twitterPage, rss, css, disqus string) staticIntf.ContextDto {
+func NewContextDto(twitterHandle, topic, tags, site, cardType, section, fbPage, twitterPage, rss, css, disqus, targetDir string) staticIntf.ContextDto {
 	dto := new(contextDto)
 	dto.TwitterHandle(twitterHandle)
 	dto.Topic(topic)
@@ -15,6 +15,7 @@ func NewContextDto(twitterHandle, topic, tags, site, cardType, section, fbPage, 
 	dto.Rss(rss)
 	dto.Css(css)
 	dto.DisqusId(disqus)
+	dto.TargetDir(targetDir)
 	return dto
 }
 
@@ -31,6 +32,7 @@ type contextDto struct {
 	css           string
 	domain        string
 	disqusId      string
+	targetDir     string
 }
 
 func (c *contextDto) TwitterHandle(twitterHandle ...string) string {
@@ -115,4 +117,11 @@ func (c *contextDto) DisqusId(disqusId ...string) string {
 		c.disqusId = disqusId[0]
 	}
 	return c.disqusId
+}
+
+func (c *contextDto) TargetDir(targetDir ...string) string {
+	if len(targetDir) > 0 {
+		c.targetDir = targetDir[0]
+	}
+	return c.targetDir
 }
