@@ -19,6 +19,11 @@ func ReadConfig(path, file string) []JsonConfig {
 	return configStructs
 }
 
+type Link struct {
+	Label string `json:"label"`
+	Link  string `json: "link"`
+}
+
 type JsonConfig struct {
 	Domain     string `json:"domain"`
 	AddPostDir string `json: "addPostDir"`
@@ -45,6 +50,8 @@ type JsonConfig struct {
 		DisqusShortname string `json: "disqusShortname"`
 		FacebookShare   string `json: "facebookShare"`
 		TellAFriend     string `json: "tellAFriend"`
+		Header          []Link `json: "header"`
+		Footer          []Link `json: "footer"`
 	} `json: "context"`
 	Deploy struct {
 		TargetDir   string `json: "targetDir"`
