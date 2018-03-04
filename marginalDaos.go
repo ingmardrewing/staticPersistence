@@ -138,15 +138,15 @@ func (p *marginalDAOv1) FillJson() []byte {
 
 func (p *marginalDAOv1) Template() string {
 	return `{
-	"version":1,
-	"id":%d,
-	"path":"%s",
-	"filename":"%s",
-	"createDate":"%s",
-	"url":"%s",
-	"title":"%s",
-	"title_plain":"%s",
-	"description":"%s",
-	"content":"%s"
+	"version": 1,
+	"id": %d,
+	"path": "%s",
+	"filename": "%s",
+	"createDate": "%s",
+	"url": "%s",
+	"title": "%s",
+	"title_plain": "%s",
+	"description": "%s",
+	"content": "%s"
 }`
 }
