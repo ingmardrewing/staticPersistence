@@ -19,7 +19,7 @@ type DTO interface {
 	CreateDate(...string) string
 	Content(...string) string
 	Url(...string) string
-	Domain() string
+	Domain(...string) string
 	PathFromDocRoot(...string) string
 	HtmlFilename(...string) string
 }
