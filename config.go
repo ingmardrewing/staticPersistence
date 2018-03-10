@@ -20,10 +20,10 @@ func ReadConfig(path, file string) []JsonConfig {
 }
 
 type Link struct {
-	Label    string `json:"label"`
-	Link     string `json: "link"`
-	FileName string `json:"filename"`
-	Path     string `json:"path"`
+	Label        string `json:"label"`
+	ExternalLink string `json: "externalLink"`
+	FileName     string `json:"filename"`
+	Path         string `json:"path"`
 }
 
 type JsonConfig struct {

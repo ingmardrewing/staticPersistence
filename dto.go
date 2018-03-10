@@ -10,7 +10,7 @@ type docDTO struct {
 	title, titlePlain, thumbUrl,
 	imageUrl, description, disqusId,
 	createDate, content, url, domain,
-	path, fspath, htmlfilename string
+	path, fspath, htmlfilename, thumbBase64 string
 }
 
 func (p *docDTO) FsPath(fspath string) {
@@ -87,11 +87,25 @@ func (p *docDTO) CreateDate(date ...string) string {
 	return p.createDate
 }
 
+func (p *docDTO) Category(content ...string) string {
+	if len(content) > 0 {
+		p.content = content[0]
+	}
+	return p.content
+}
+
 func (p *docDTO) Content(content ...string) string {
 	if len(content) > 0 {
 		p.content = content[0]
 	}
 	return p.content
+}
+
+func (p *docDTO) ThumbBase64(thumb ...string) string {
+	if len(thumb) > 0 {
+		p.thumbBase64 = thumb[0]
+	}
+	return p.thumbBase64
 }
 
 func (p *docDTO) Url(url ...string) string {
