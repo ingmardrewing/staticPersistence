@@ -1,7 +1,5 @@
 package staticPersistence
 
-import "strings"
-
 func NewDto() *docDTO {
 	return new(docDTO)
 }
@@ -11,8 +9,8 @@ type docDTO struct {
 	id int
 	title, titlePlain, thumbUrl,
 	imageUrl, description, disqusId,
-	createDate, content, url,
-	path, fspath, htmlfilename string
+	createDate, content, url, domain,
+	path, fspath, htmlfilename, thumbBase64 string
 }
 
 func (p *docDTO) FsPath(fspath string) {
@@ -40,12 +38,11 @@ func (p *docDTO) Title(title ...string) string {
 	return p.title
 }
 
-func (p *docDTO) Domain() string {
-	if len(p.url) > 0 {
-		parts := strings.Split(p.url, "/")
-		return strings.Join(parts[0:3], "/")
+func (p *docDTO) Domain(domain ...string) string {
+	if len(domain) > 0 {
+		p.domain = domain[0]
 	}
-	return ""
+	return p.domain
 }
 
 func (p *docDTO) TitlePlain(titlePlain ...string) string {
@@ -90,11 +87,25 @@ func (p *docDTO) CreateDate(date ...string) string {
 	return p.createDate
 }
 
+func (p *docDTO) Category(content ...string) string {
+	if len(content) > 0 {
+		p.content = content[0]
+	}
+	return p.content
+}
+
 func (p *docDTO) Content(content ...string) string {
 	if len(content) > 0 {
 		p.content = content[0]
 	}
 	return p.content
+}
+
+func (p *docDTO) ThumbBase64(thumb ...string) string {
+	if len(thumb) > 0 {
+		p.thumbBase64 = thumb[0]
+	}
+	return p.thumbBase64
 }
 
 func (p *docDTO) Url(url ...string) string {

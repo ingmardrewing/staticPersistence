@@ -49,8 +49,10 @@ func (p *narrativeDAOv0) ExtractFromJson() {
 	p.dto.DisqusId(p.ReadString(p.data, "disqusId"))
 	p.dto.CreateDate(p.getDateFromFSPath())
 	p.dto.Content(p.ReadString(p.data, "act"))
+	p.dto.Category(p.ReadString(p.data, "act"))
 
 	p.dto.PathFromDocRoot(p.ReadString(p.data, "path"))
+	p.dto.ThumbBase64(p.ReadString(p.data, "thumbBase64"))
 	p.dto.HtmlFilename("index.html")
 }
 

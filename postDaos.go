@@ -43,10 +43,12 @@ func (p *postDAOv0) ExtractFromJson() {
 	p.dto.CreateDate(p.ReadString(p.data, "post", "date"))
 	p.dto.Content(p.ReadString(p.data, "post", "content"))
 
-	p.dto.Url(p.ReadString(p.data, "post", "url"))
-
-	parts := strings.Split(p.dto.Url(), "/")
+	url := p.ReadString(p.data, "post", "url")
+	parts := strings.Split(url, "/")
 	path := strings.Join(parts[4:], "/")
+
+	p.dto.Url(url)
+	p.dto.Domain(parts[2])
 	p.dto.PathFromDocRoot(path)
 
 	p.dto.HtmlFilename("index.html")
@@ -115,11 +117,13 @@ func (p *postDAOv1) ExtractFromJson() {
 	p.dto.DisqusId(p.ReadString(p.data, "dsq_thread_id"))
 	p.dto.CreateDate(p.ReadString(p.data, "date"))
 	p.dto.Content(p.ReadString(p.data, "content"))
-	p.dto.Url(p.ReadString(p.data, "url"))
 
-	parts := strings.Split(p.dto.Url(), "/")
+	url := p.ReadString(p.data, "url")
+	parts := strings.Split(url, "/")
 	path := strings.Join(parts[4:], "/")
-	//p.dto.FsPath(path)
+
+	p.dto.Url(url)
+	p.dto.Domain(parts[2])
 	p.dto.PathFromDocRoot(path)
 	p.dto.HtmlFilename("index.html")
 }

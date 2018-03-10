@@ -18,10 +18,12 @@ type DTO interface {
 	DisqusId(...string) string
 	CreateDate(...string) string
 	Content(...string) string
+	Category(...string) string
 	Url(...string) string
-	Domain() string
+	Domain(...string) string
 	PathFromDocRoot(...string) string
 	HtmlFilename(...string) string
+	ThumbBase64(...string) string
 }
 
 type DAO interface {
