@@ -59,12 +59,15 @@ func (p *narrativeDAOv0) ExtractFromJson() {
 func (p *narrativeDAOv0) getDateFromFSPath() string {
 	fp := p.ReadString(p.data, "path")
 	parts := strings.Split(fp, "/")
-	loc, _ := time.LoadLocation("Europe/Berlin")
-	y, _ := strconv.Atoi(parts[1])
-	m, _ := strconv.Atoi(parts[2])
-	d, _ := strconv.Atoi(parts[3])
-	date := time.Date(y, time.Month(m), d, 20, 0, 0, 0, loc)
-	return date.Format(time.RFC1123Z)
+	if len(parts) > 3 {
+		loc, _ := time.LoadLocation("Europe/Berlin")
+		y, _ := strconv.Atoi(parts[1])
+		m, _ := strconv.Atoi(parts[2])
+		d, _ := strconv.Atoi(parts[3])
+		date := time.Date(y, time.Month(m), d, 20, 0, 0, 0, loc)
+		return date.Format(time.RFC1123Z)
+	}
+	return ""
 }
 
 func (p *narrativeDAOv0) FillJson() []byte {

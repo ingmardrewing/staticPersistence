@@ -31,10 +31,11 @@ type JsonConfig struct {
 	AddPostDir string `json: "addPostDir"`
 	AddPageDir string `json: "addPageDir"`
 	Src        struct {
-		PostsDir    string `json: "postsDir"`
-		MarginalDir string `json: "marginalDir"`
-		MainPages   string `json: "mainPages"`
-		Narrative   string `json: "narrative"`
+		PostsDir           string `json: "postsDir"`
+		MarginalDir        string `json: "marginalDir"`
+		MainPages          string `json: "mainPages"`
+		Narrative          string `json: "narrative"`
+		NarrativeMarginals string `json: "narrativeMarginals"`
 	} `json: "src"`
 	DefaultMeta struct {
 		BlogExcerpt     string `json: "blogExcerpt"`
