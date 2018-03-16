@@ -60,7 +60,8 @@ type JsonConfig struct {
 		TargetDir   string `json: "targetDir"`
 		CssFileName string `json: "cssFileName"`
 		JsFileName  string `json: "jsFileName"`
-		BlogDir     string `json: "jsFileName"`
-		Rss         string `json: "rss"`
+		BlogDir     string `json: "blog"`
+		RssPath     string `json: "rssPath"`
+		RssFilename string `json: "rssFilename"`
 	} `json: "deploy"`
 }
