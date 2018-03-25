@@ -1,20 +1,26 @@
 package staticPersistence
 
-import "fmt"
+import (
+	"fmt"
+
+	"github.com/ingmardrewing/staticIntf"
+)
 
 // Page Dao
-func NewPageDAO(data []byte, path, filename string) DAO {
-	dto := NewDto()
-	dto.FsPath(path)
-	dto.HtmlFilename(filename)
-
-	var d DAO
+func NewPageDAO(data []byte, path, filename string) PageDao {
+	var d PageDao
 	switch FindJsonVersion(data) {
 	case v1:
 		d = new(pageDAOv1)
 	default:
 		d = new(pageDAOv1)
 	}
+
+	dto := NewFilledDto(0,
+		"", "", "", "", "",
+		"", "", "", "", "",
+		path, filename, "", "")
+
 	d.Dto(dto)
 	d.Data(data)
 
@@ -25,14 +31,14 @@ func NewPageDAO(data []byte, path, filename string) DAO {
 type pageDAOv1 struct {
 	data []byte
 	Json
-	dto DTO
+	dto staticIntf.PageDto
 }
 
 func (p *pageDAOv1) Data(data []byte) {
 	p.data = data
 }
 
-func (p *pageDAOv1) Dto(dto ...DTO) DTO {
+func (p *pageDAOv1) Dto(dto ...staticIntf.PageDto) staticIntf.PageDto {
 	if len(dto) > 0 {
 		p.dto = dto[0]
 	}
@@ -40,15 +46,31 @@ func (p *pageDAOv1) Dto(dto ...DTO) DTO {
 }
 
 func (p *pageDAOv1) ExtractFromJson() {
-	p.dto.Id(p.ReadInt(p.data, "id"))
-	p.dto.Title(p.ReadString(p.data, "title"))
-	p.dto.TitlePlain(p.ReadString(p.data, "title_plain"))
-	p.dto.Description(p.ReadString(p.data, "description"))
-	p.dto.CreateDate(p.ReadString(p.data, "createDate"))
-	p.dto.Content(p.ReadString(p.data, "content"))
+	id := p.ReadInt(p.data, "id")
+	title := p.ReadString(p.data, "title")
+	titlePlain := p.ReadString(p.data, "title_plain")
+	description := p.ReadString(p.data, "description")
+	createDate := p.ReadString(p.data, "createDate")
+	content := p.ReadString(p.data, "content")
+	pathFromDocRoot := p.ReadString(p.data, "path")
+	htmlFilename := p.ReadString(p.data, "filename")
 
-	p.dto.PathFromDocRoot(p.ReadString(p.data, "path"))
-	p.dto.HtmlFilename(p.ReadString(p.data, "filename"))
+	p.dto = NewFilledDto(
+		id,
+		title,
+		titlePlain,
+		"",
+		"",
+		description,
+		"",
+		createDate,
+		content,
+		"",
+		"",
+		pathFromDocRoot,
+		p.dto.FsPath(),
+		htmlFilename,
+		"")
 }
 
 func (p *pageDAOv1) FillJson() []byte {

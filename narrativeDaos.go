@@ -5,13 +5,16 @@ import (
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/ingmardrewing/staticIntf"
 )
 
 // narrativeDAO
-func NewNarrativeDAO(data []byte, path, filename string) DAO {
-	dto := NewDto()
-	dto.FsPath(path)
-	dto.HtmlFilename(filename)
+func NewNarrativeDAO(data []byte, path, filename string) PageDao {
+	dto := NewFilledDto(0,
+		"", "", "", "", "",
+		"", "", "", "", "",
+		path, filename, "", "")
 
 	d := new(narrativeDAOv0)
 	d.Dto(dto)
@@ -26,14 +29,14 @@ func NewNarrativeDAO(data []byte, path, filename string) DAO {
 type narrativeDAOv0 struct {
 	data []byte
 	Json
-	dto DTO
+	dto staticIntf.PageDto
 }
 
 func (p *narrativeDAOv0) Data(data []byte) {
 	p.data = data
 }
 
-func (p *narrativeDAOv0) Dto(dto ...DTO) DTO {
+func (p *narrativeDAOv0) Dto(dto ...staticIntf.PageDto) staticIntf.PageDto {
 	if len(dto) > 0 {
 		p.dto = dto[0]
 	}
@@ -41,19 +44,35 @@ func (p *narrativeDAOv0) Dto(dto ...DTO) DTO {
 }
 
 func (p *narrativeDAOv0) ExtractFromJson() {
-	p.dto.Id(p.ReadInt(p.data, "id"))
-	p.dto.Title(p.ReadString(p.data, "title"))
-	p.dto.ThumbUrl(p.ReadString(p.data, "imgUrl"))
-	p.dto.ImageUrl(p.ReadString(p.data, "imgUrl"))
-	p.dto.Description(p.ReadString(p.data, "description"))
-	p.dto.DisqusId(p.ReadString(p.data, "disqusId"))
-	p.dto.CreateDate(p.getDateFromFSPath())
-	p.dto.Content(p.ReadString(p.data, "act"))
-	p.dto.Category(p.ReadString(p.data, "act"))
+	id := p.ReadInt(p.data, "id")
+	title := p.ReadString(p.data, "title")
+	thumbUrl := p.ReadString(p.data, "imgUrl")
+	imageUrl := p.ReadString(p.data, "imgUrl")
+	description := p.ReadString(p.data, "description")
+	disqusId := p.ReadString(p.data, "disqusId")
+	createDate := p.getDateFromFSPath()
+	content := p.ReadString(p.data, "act")
+	pathFromDocRoot := p.ReadString(p.data, "path")
+	thumbBase64 := p.ReadString(p.data, "thumbBase64")
+	htmlFilename := "index.html"
 
-	p.dto.PathFromDocRoot(p.ReadString(p.data, "path"))
-	p.dto.ThumbBase64(p.ReadString(p.data, "thumbBase64"))
-	p.dto.HtmlFilename("index.html")
+	p.dto = NewFilledDto(
+		id,
+		title,
+		title,
+		thumbUrl,
+		imageUrl,
+		description,
+		disqusId,
+		createDate,
+		content,
+		"",
+		"",
+		pathFromDocRoot,
+		p.dto.FsPath(),
+		htmlFilename,
+		thumbBase64)
+
 }
 
 func (p *narrativeDAOv0) getDateFromFSPath() string {
