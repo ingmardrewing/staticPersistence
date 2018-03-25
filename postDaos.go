@@ -3,20 +3,24 @@ package staticPersistence
 import (
 	"fmt"
 	"strings"
+
+	"github.com/ingmardrewing/staticIntf"
 )
 
 // Post DAOs
-func NewPostDAO(data []byte, path, filename string) DAO {
-	var d DAO
+func NewPostDAO(data []byte, path, filename string) PageDao {
+	var d PageDao
 	switch FindJsonVersion(data) {
 	case v1:
 		d = new(postDAOv1)
 	default:
 		d = new(postDAOv0)
 	}
-	dto := NewDto()
-	dto.FsPath(path)
-	dto.HtmlFilename(filename)
+
+	dto := NewFilledDto(0,
+		"", "", "", "", "",
+		"", "", "", "", "",
+		path, filename, "", "")
 
 	d.Dto(dto)
 	d.Data(data)
@@ -30,35 +34,48 @@ func NewPostDAO(data []byte, path, filename string) DAO {
 type postDAOv0 struct {
 	data []byte
 	Json
-	dto DTO
+	dto staticIntf.PageDto
 }
 
 func (p *postDAOv0) ExtractFromJson() {
-	p.dto.Id(p.ReadInt(p.data, "post", "post_id"))
-	p.dto.Title(p.ReadString(p.data, "post", "title"))
-	p.dto.ThumbUrl(p.ReadString(p.data, "thumbImg"))
-	p.dto.ImageUrl(p.ReadString(p.data, "postImg"))
-	p.dto.Description(p.ReadString(p.data, "post", "excerpt"))
-	p.dto.DisqusId(p.ReadString(p.data, "post", "custom_fields", "dsq_thread_id", "[0]"))
-	p.dto.CreateDate(p.ReadString(p.data, "post", "date"))
-	p.dto.Content(p.ReadString(p.data, "post", "content"))
+	id := p.ReadInt(p.data, "post", "post_id")
+	title := p.ReadString(p.data, "post", "title")
+	thumbUrl := p.ReadString(p.data, "thumbImg")
+	imageUrl := p.ReadString(p.data, "postImg")
+	description := p.ReadString(p.data, "post", "excerpt")
+	disqusId := p.ReadString(p.data, "post", "custom_fields", "dsq_thread_id", "[0]")
+	createDate := p.ReadString(p.data, "post", "date")
+	content := p.ReadString(p.data, "post", "content")
 
 	url := p.ReadString(p.data, "post", "url")
 	parts := strings.Split(url, "/")
 	path := strings.Join(parts[4:], "/")
+	domain := parts[2]
+	htmlFilename := "index.html"
 
-	p.dto.Url(url)
-	p.dto.Domain(parts[2])
-	p.dto.PathFromDocRoot(path)
-
-	p.dto.HtmlFilename("index.html")
+	p.dto = NewFilledDto(
+		id,
+		title,
+		"",
+		thumbUrl,
+		imageUrl,
+		description,
+		disqusId,
+		createDate,
+		content,
+		url,
+		domain,
+		path,
+		p.dto.FsPath(),
+		htmlFilename,
+		"")
 }
 
 func (p *postDAOv0) Data(data []byte) {
 	p.data = data
 }
 
-func (p *postDAOv0) Dto(dto ...DTO) DTO {
+func (p *postDAOv0) Dto(dto ...staticIntf.PageDto) staticIntf.PageDto {
 	if len(dto) > 0 {
 		p.dto = dto[0]
 	}
@@ -105,34 +122,50 @@ func (p *postDAOv0) Template() string {
 type postDAOv1 struct {
 	data []byte
 	Json
-	dto DTO
+	dto staticIntf.PageDto
 }
 
 func (p *postDAOv1) ExtractFromJson() {
-	p.dto.Id(p.ReadInt(p.data, "id"))
-	p.dto.Title(p.ReadString(p.data, "title"))
-	p.dto.ThumbUrl(p.ReadString(p.data, "thumbImg"))
-	p.dto.ImageUrl(p.ReadString(p.data, "postImg"))
-	p.dto.Description(p.ReadString(p.data, "excerpt"))
-	p.dto.DisqusId(p.ReadString(p.data, "dsq_thread_id"))
-	p.dto.CreateDate(p.ReadString(p.data, "date"))
-	p.dto.Content(p.ReadString(p.data, "content"))
+	id := p.ReadInt(p.data, "id")
+	title := p.ReadString(p.data, "title")
+	thumbUrl := p.ReadString(p.data, "thumbImg")
+	imageUrl := p.ReadString(p.data, "postImg")
+	description := p.ReadString(p.data, "excerpt")
+	disqusId := p.ReadString(p.data, "dsq_thread_id")
+	createDate := p.ReadString(p.data, "date")
+	content := p.ReadString(p.data, "content")
 
 	url := p.ReadString(p.data, "url")
 	parts := strings.Split(url, "/")
 	path := strings.Join(parts[4:], "/")
 
-	p.dto.Url(url)
-	p.dto.Domain(parts[2])
-	p.dto.PathFromDocRoot(path)
-	p.dto.HtmlFilename("index.html")
+	domain := parts[2]
+	pathFromDocRoot := path
+	htmlFilename := "index.html"
+
+	p.dto = NewFilledDto(
+		id,
+		title,
+		title,
+		thumbUrl,
+		imageUrl,
+		description,
+		disqusId,
+		createDate,
+		content,
+		url,
+		domain,
+		pathFromDocRoot,
+		path,
+		htmlFilename,
+		"")
 }
 
 func (p *postDAOv1) Data(data []byte) {
 	p.data = data
 }
 
-func (p *postDAOv1) Dto(dto ...DTO) DTO {
+func (p *postDAOv1) Dto(dto ...staticIntf.PageDto) staticIntf.PageDto {
 	if len(dto) > 0 {
 		p.dto = dto[0]
 	}
