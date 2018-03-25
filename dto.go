@@ -4,6 +4,17 @@ func NewDto() *docDTO {
 	return new(docDTO)
 }
 
+func NewFilledDto(id int,
+	title, titlePlain, thumbUrl,
+	imageUrl, description, disqusId,
+	createDate, content, url, domain,
+	path, fspath, htmlfilename, thumbBase64 string) *docDTO {
+	return &docDTO{id, title, titlePlain, thumbUrl,
+		imageUrl, description, disqusId,
+		createDate, content, url, domain,
+		path, fspath, htmlfilename, thumbBase64}
+}
+
 // docDtO
 type docDTO struct {
 	id int
