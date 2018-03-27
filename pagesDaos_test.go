@@ -48,6 +48,7 @@ func TestNewPostDAO_without_json_data_returns_newest_version(t *testing.T) {
 	"excerpt":"",
 	"content":"",
 	"dsq_thread_id":""
+	"thumbBase64":""
 }`
 	dto := NewFilledDto(0,
 		"", "", "", "", "",

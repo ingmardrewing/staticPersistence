@@ -1,6 +1,7 @@
 package staticPersistence
 
 import (
+	"fmt"
 	"strconv"
 	"strings"
 	"time"
@@ -144,4 +145,39 @@ func (a *abstractPageDao) Dto(dto ...staticIntf.PageDto) staticIntf.PageDto {
 		a.dto = dto[0]
 	}
 	return a.dto
+}
+
+func (a *abstractPageDao) FillJson() []byte {
+	json := fmt.Sprintf(a.Template(),
+		a.dto.ThumbUrl(),
+		a.dto.ImageUrl(),
+		a.dto.HtmlFilename(),
+		a.dto.Id(),
+		a.dto.CreateDate(),
+		a.dto.Url(),
+		a.dto.Title(),
+		a.dto.TitlePlain(),
+		a.dto.Description(),
+		a.dto.Content(),
+		a.dto.DisqusId(),
+		a.dto.ThumbBase64())
+	return []byte(json)
+}
+
+func (a *abstractPageDao) Template() string {
+	return `{
+	"version":1,
+	"thumbImg":"%s",
+	"postImg":"%s",
+	"filename":"%s",
+	"id":%d,
+	"date":"%s",
+	"url":"%s",
+	"title":"%s",
+	"title_plain":"%s",
+	"excerpt":"%s",
+	"content":"%s",
+	"dsq_thread_id":"%s"
+	"thumbBase64":"%s"
+}`
 }

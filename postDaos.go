@@ -1,9 +1,6 @@
 package staticPersistence
 
-import (
-	"fmt"
-	"strings"
-)
+import "strings"
 
 // Post DAOs
 func NewPostDAO(data []byte, path, filename string) PageDao {
@@ -67,42 +64,6 @@ func (p *postDAOv0) ExtractFromJson() {
 		"")
 }
 
-func (p *postDAOv0) FillJson() []byte {
-	json := fmt.Sprintf(p.Template(),
-		p.dto.ThumbUrl(),
-		p.dto.ImageUrl(),
-		p.dto.HtmlFilename(),
-		p.dto.Id(),
-		p.dto.CreateDate(),
-		p.dto.Url(),
-		p.dto.Title(),
-		p.dto.TitlePlain(),
-		p.dto.Description(),
-		p.dto.Content(),
-		p.dto.DisqusId())
-	return []byte(json)
-}
-
-func (p *postDAOv0) Template() string {
-	return `{
-	"thumbImg":"%s",
-	"postImg":"%s",
-	"filename":"%s",
-	"post":{
-		"post_id":"%s",
-		"date":"%s",
-		"url":"%s",
-		"title":"%s",
-		"title_plain":"%s",
-		"excerpt":"%s",
-		"content":"%s",
-		"custom_fields":{
-			"dsq_thread_id":["%s"]
-		}
-	}
-}`
-}
-
 // New json format v1
 type postDAOv1 struct {
 	abstractPageDao
@@ -142,37 +103,4 @@ func (p *postDAOv1) ExtractFromJson() {
 		path,
 		htmlFilename,
 		"")
-}
-
-func (p *postDAOv1) FillJson() []byte {
-	json := fmt.Sprintf(p.Template(),
-		p.dto.ThumbUrl(),
-		p.dto.ImageUrl(),
-		p.dto.HtmlFilename(),
-		p.dto.Id(),
-		p.dto.CreateDate(),
-		p.dto.Url(),
-		p.dto.Title(),
-		p.dto.TitlePlain(),
-		p.dto.Description(),
-		p.dto.Content(),
-		p.dto.DisqusId())
-	return []byte(json)
-}
-
-func (p *postDAOv1) Template() string {
-	return `{
-	"version":1,
-	"thumbImg":"%s",
-	"postImg":"%s",
-	"filename":"%s",
-	"id":%d,
-	"date":"%s",
-	"url":"%s",
-	"title":"%s",
-	"title_plain":"%s",
-	"excerpt":"%s",
-	"content":"%s",
-	"dsq_thread_id":"%s"
-}`
 }
