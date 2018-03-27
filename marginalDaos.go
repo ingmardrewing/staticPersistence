@@ -1,10 +1,6 @@
 package staticPersistence
 
-import (
-	"fmt"
-
-	"github.com/ingmardrewing/staticIntf"
-)
+import "fmt"
 
 // marginalDAO
 func NewMarginalDAO(data []byte, path, filename string) PageDao {
@@ -31,51 +27,7 @@ func NewMarginalDAO(data []byte, path, filename string) PageDao {
 // still having an unneccessary complex structure
 // staying here for historical reasons
 type marginalDAOv0 struct {
-	data []byte
-	Json
-	dto staticIntf.PageDto
-}
-
-func (p *marginalDAOv0) Data(data []byte) {
-	p.data = data
-}
-
-func (p *marginalDAOv0) Dto(dto ...staticIntf.PageDto) staticIntf.PageDto {
-	if len(dto) > 0 {
-		p.dto = dto[0]
-	}
-	return p.dto
-}
-
-func (p *marginalDAOv0) ExtractFromJson() {
-	id := p.ReadInt(p.data, "page", "post_id")
-	title := p.ReadString(p.data, "title")
-	thumbUrl := p.ReadString(p.data, "thumbImg")
-	imageUrl := p.ReadString(p.data, "postImg")
-	description := p.ReadString(p.data, "page", "excerpt")
-	disqusId := p.ReadString(p.data, "page", "custom_fields", "dsq_thread_id", "[0]")
-	createDate := p.ReadString(p.data, "page", "date")
-	content := p.ReadString(p.data, "content")
-	pathFromDocRoot := p.ReadString(p.data, "path")
-	htmlFilename := p.ReadString(p.data, "filename")
-
-	p.dto = NewFilledDto(
-		id,
-		title,
-		title,
-		thumbUrl,
-		imageUrl,
-		description,
-		disqusId,
-		createDate,
-		content,
-		"",
-		"",
-		pathFromDocRoot,
-		p.dto.FsPath(),
-		htmlFilename,
-		"")
-
+	abstractPageDao
 }
 
 func (p *marginalDAOv0) FillJson() []byte {
@@ -117,48 +69,7 @@ func (p *marginalDAOv0) Template() string {
 // still having an unneccessary complex structure
 // staying here for historical reasons
 type marginalDAOv1 struct {
-	data []byte
-	Json
-	dto staticIntf.PageDto
-}
-
-func (p *marginalDAOv1) Data(data []byte) {
-	p.data = data
-}
-
-func (p *marginalDAOv1) Dto(dto ...staticIntf.PageDto) staticIntf.PageDto {
-	if len(dto) > 0 {
-		p.dto = dto[0]
-	}
-	return p.dto
-}
-
-func (p *marginalDAOv1) ExtractFromJson() {
-	id := p.ReadInt(p.data, "id")
-	title := p.ReadString(p.data, "title")
-	titlePlain := p.ReadString(p.data, "title_plain")
-	description := p.ReadString(p.data, "description")
-	createDate := p.ReadString(p.data, "createDate")
-	content := p.ReadString(p.data, "content")
-	pathFromDocRoot := p.ReadString(p.data, "path")
-	htmlFilename := p.ReadString(p.data, "filename")
-
-	p.dto = NewFilledDto(
-		id,
-		title,
-		titlePlain,
-		"",
-		"",
-		description,
-		"",
-		createDate,
-		content,
-		"",
-		"",
-		pathFromDocRoot,
-		p.dto.FsPath(),
-		htmlFilename,
-		"")
+	abstractPageDao
 }
 
 func (p *marginalDAOv1) FillJson() []byte {

@@ -1,10 +1,6 @@
 package staticPersistence
 
-import (
-	"fmt"
-
-	"github.com/ingmardrewing/staticIntf"
-)
+import "fmt"
 
 // Page Dao
 func NewPageDAO(data []byte, path, filename string) PageDao {
@@ -29,48 +25,7 @@ func NewPageDAO(data []byte, path, filename string) PageDao {
 
 // Pages DAOs
 type pageDAOv1 struct {
-	data []byte
-	Json
-	dto staticIntf.PageDto
-}
-
-func (p *pageDAOv1) Data(data []byte) {
-	p.data = data
-}
-
-func (p *pageDAOv1) Dto(dto ...staticIntf.PageDto) staticIntf.PageDto {
-	if len(dto) > 0 {
-		p.dto = dto[0]
-	}
-	return p.dto
-}
-
-func (p *pageDAOv1) ExtractFromJson() {
-	id := p.ReadInt(p.data, "id")
-	title := p.ReadString(p.data, "title")
-	titlePlain := p.ReadString(p.data, "title_plain")
-	description := p.ReadString(p.data, "description")
-	createDate := p.ReadString(p.data, "createDate")
-	content := p.ReadString(p.data, "content")
-	pathFromDocRoot := p.ReadString(p.data, "path")
-	htmlFilename := p.ReadString(p.data, "filename")
-
-	p.dto = NewFilledDto(
-		id,
-		title,
-		titlePlain,
-		"",
-		"",
-		description,
-		"",
-		createDate,
-		content,
-		"",
-		"",
-		pathFromDocRoot,
-		p.dto.FsPath(),
-		htmlFilename,
-		"")
+	abstractPageDao
 }
 
 func (p *pageDAOv1) FillJson() []byte {

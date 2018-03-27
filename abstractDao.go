@@ -31,19 +31,32 @@ func (k *keyCollection) getKeyCollection(key string) []*keyPath {
 
 func NewKeyCollection() *keyCollection {
 	kc := new(keyCollection)
+	kc.pathMap = make(map[string][]*keyPath)
+
 	kc.addKeyPath("id", &keyPath{[]string{"page", "post_id"}})
 	kc.addKeyPath("id", &keyPath{[]string{"id"}})
+
 	kc.addKeyPath("title", &keyPath{[]string{"title"}})
 	kc.addKeyPath("titlePlain", &keyPath{[]string{"title_plain"}})
+
 	kc.addKeyPath("thumbUrl", &keyPath{[]string{"thumbUrl"}})
+	kc.addKeyPath("thumbUrl", &keyPath{[]string{"thumbImg"}})
+
 	kc.addKeyPath("imageUrl", &keyPath{[]string{"imageUrl"}})
+	kc.addKeyPath("imageUrl", &keyPath{[]string{"postImg"}})
+
 	kc.addKeyPath("description", &keyPath{[]string{"page", "excerpt"}})
 	kc.addKeyPath("disqusId", &keyPath{[]string{"page", "custom_fields", "dsq_thread_id", "[0]"}})
+
 	kc.addKeyPath("createDate", &keyPath{[]string{"page", "date"}})
+	kc.addKeyPath("createDate", &keyPath{[]string{"createDate"}})
+
 	kc.addKeyPath("content", &keyPath{[]string{"content"}})
 	kc.addKeyPath("pathFromDocRoot", &keyPath{[]string{"path"}})
+
 	kc.addKeyPath("htmlFilename", &keyPath{[]string{"filename"}})
-	kc.addKeyPath("ThumbBase64", &keyPath{[]string{"ThumbBase64"}})
+
+	kc.addKeyPath("ThumbBase64", &keyPath{[]string{"thumbBase64"}})
 	return kc
 }
 

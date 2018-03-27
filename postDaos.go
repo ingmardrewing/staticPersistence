@@ -3,8 +3,6 @@ package staticPersistence
 import (
 	"fmt"
 	"strings"
-
-	"github.com/ingmardrewing/staticIntf"
 )
 
 // Post DAOs
@@ -32,9 +30,7 @@ func NewPostDAO(data []byte, path, filename string) PageDao {
 // still having an unneccessary complex structure
 // staying here for historical reasons
 type postDAOv0 struct {
-	data []byte
-	Json
-	dto staticIntf.PageDto
+	abstractPageDao
 }
 
 func (p *postDAOv0) ExtractFromJson() {
@@ -69,17 +65,6 @@ func (p *postDAOv0) ExtractFromJson() {
 		p.dto.FsPath(),
 		htmlFilename,
 		"")
-}
-
-func (p *postDAOv0) Data(data []byte) {
-	p.data = data
-}
-
-func (p *postDAOv0) Dto(dto ...staticIntf.PageDto) staticIntf.PageDto {
-	if len(dto) > 0 {
-		p.dto = dto[0]
-	}
-	return p.dto
 }
 
 func (p *postDAOv0) FillJson() []byte {
@@ -120,9 +105,7 @@ func (p *postDAOv0) Template() string {
 
 // New json format v1
 type postDAOv1 struct {
-	data []byte
-	Json
-	dto staticIntf.PageDto
+	abstractPageDao
 }
 
 func (p *postDAOv1) ExtractFromJson() {
@@ -159,17 +142,6 @@ func (p *postDAOv1) ExtractFromJson() {
 		path,
 		htmlFilename,
 		"")
-}
-
-func (p *postDAOv1) Data(data []byte) {
-	p.data = data
-}
-
-func (p *postDAOv1) Dto(dto ...staticIntf.PageDto) staticIntf.PageDto {
-	if len(dto) > 0 {
-		p.dto = dto[0]
-	}
-	return p.dto
 }
 
 func (p *postDAOv1) FillJson() []byte {

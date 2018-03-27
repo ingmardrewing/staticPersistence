@@ -5,8 +5,6 @@ import (
 	"strconv"
 	"strings"
 	"time"
-
-	"github.com/ingmardrewing/staticIntf"
 )
 
 // narrativeDAO
@@ -27,20 +25,7 @@ func NewNarrativeDAO(data []byte, path, filename string) PageDao {
 // still having an unneccessary complex structure
 // staying here for historical reasons
 type narrativeDAOv0 struct {
-	data []byte
-	Json
-	dto staticIntf.PageDto
-}
-
-func (p *narrativeDAOv0) Data(data []byte) {
-	p.data = data
-}
-
-func (p *narrativeDAOv0) Dto(dto ...staticIntf.PageDto) staticIntf.PageDto {
-	if len(dto) > 0 {
-		p.dto = dto[0]
-	}
-	return p.dto
+	abstractPageDao
 }
 
 func (p *narrativeDAOv0) ExtractFromJson() {
