@@ -61,6 +61,7 @@ func (p *narrativeDAOv0) ExtractFromJson() {
 }
 
 func (p *narrativeDAOv0) getDateFromFSPath() string {
+
 	fp := p.ReadString(p.data, "path")
 	parts := strings.Split(fp, "/")
 	if len(parts) > 3 {

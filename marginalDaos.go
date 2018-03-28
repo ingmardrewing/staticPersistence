@@ -2,11 +2,7 @@ package staticPersistence
 
 // marginalDAO
 func NewMarginalDAO(data []byte, path, filename string) PageDao {
-	var d PageDao
-	switch FindJsonVersion(data) {
-	default:
-		d = new(marginalDAOv0)
-	}
+	d := new(abstractPageDao)
 
 	dto := NewFilledDto(0,
 		"", "", "", "", "",
@@ -17,11 +13,4 @@ func NewMarginalDAO(data []byte, path, filename string) PageDao {
 	d.Data(data)
 
 	return d
-}
-
-// Original data structure from wordpress migration
-// still having an unneccessary complex structure
-// staying here for historical reasons
-type marginalDAOv0 struct {
-	abstractPageDao
 }

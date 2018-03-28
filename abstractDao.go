@@ -35,19 +35,27 @@ func NewKeyCollection() *keyCollection {
 	kc.pathMap = make(map[string][]*keyPath)
 
 	kc.addKeyPath("url", &keyPath{[]string{"post", "url"}})
+	kc.addKeyPath("url", &keyPath{[]string{"url"}})
+
 	kc.addKeyPath("domain", &keyPath{[]string{"domain"}})
 
+	kc.addKeyPath("id", &keyPath{[]string{"post", "post_id"}})
 	kc.addKeyPath("id", &keyPath{[]string{"page", "post_id"}})
 	kc.addKeyPath("id", &keyPath{[]string{"id"}})
 
 	kc.addKeyPath("title", &keyPath{[]string{"title"}})
+	kc.addKeyPath("title", &keyPath{[]string{"post", "title"}})
+
 	kc.addKeyPath("titlePlain", &keyPath{[]string{"title_plain"}})
+	kc.addKeyPath("titlePlain", &keyPath{[]string{"title"}})
 
 	kc.addKeyPath("thumbUrl", &keyPath{[]string{"thumbUrl"}})
 	kc.addKeyPath("thumbUrl", &keyPath{[]string{"thumbImg"}})
+	kc.addKeyPath("thumbUrl", &keyPath{[]string{"imgUrl"}})
 
 	kc.addKeyPath("imageUrl", &keyPath{[]string{"imageUrl"}})
 	kc.addKeyPath("imageUrl", &keyPath{[]string{"postImg"}})
+	kc.addKeyPath("imageUrl", &keyPath{[]string{"imgUrl"}})
 
 	kc.addKeyPath("description", &keyPath{[]string{"page", "excerpt"}})
 	kc.addKeyPath("description", &keyPath{[]string{"description"}})
@@ -55,17 +63,22 @@ func NewKeyCollection() *keyCollection {
 
 	kc.addKeyPath("disqusId", &keyPath{[]string{"page", "custom_fields", "dsq_thread_id", "[0]"}})
 	kc.addKeyPath("disqusId", &keyPath{[]string{"dsq_thread_id"}})
+	kc.addKeyPath("disqusId", &keyPath{[]string{"disqusId"}})
 
+	kc.addKeyPath("createDate", &keyPath{[]string{"post", "date"}})
 	kc.addKeyPath("createDate", &keyPath{[]string{"page", "date"}})
 	kc.addKeyPath("createDate", &keyPath{[]string{"createDate"}})
 	kc.addKeyPath("createDate", &keyPath{[]string{"date"}})
 
 	kc.addKeyPath("content", &keyPath{[]string{"content"}})
+	kc.addKeyPath("content", &keyPath{[]string{"post", "content"}})
+	kc.addKeyPath("content", &keyPath{[]string{"act"}})
+
 	kc.addKeyPath("pathFromDocRoot", &keyPath{[]string{"path"}})
 
 	kc.addKeyPath("htmlFilename", &keyPath{[]string{"filename"}})
 
-	kc.addKeyPath("ThumbBase64", &keyPath{[]string{"thumbBase64"}})
+	kc.addKeyPath("thumbBase64", &keyPath{[]string{"thumbBase64"}})
 	return kc
 }
 
@@ -103,13 +116,14 @@ func (a *abstractPageDao) ExtractFromJson() {
 	id := a.ReadFirstInt("id")
 	title := a.ReadFirstString("title")
 	titlePlain := a.ReadFirstString("titlePlain")
-	thumbUrl := a.ReadFirstString("thumbImg")
-	imageUrl := a.ReadFirstString("postImg")
+	thumbUrl := a.ReadFirstString("thumbUrl")
+	imageUrl := a.ReadFirstString("imageUrl")
 	description := a.ReadFirstString("description")
 	disqusId := a.ReadFirstString("disqusId")
 	createDate := a.ReadFirstString("createDate")
 	content := a.ReadFirstString("content")
 	pathFromDocRoot := a.ReadFirstString("pathFromDocRoot")
+	fsPath := a.ReadFirstString("fsPath")
 	htmlFilename := a.ReadFirstString("htmlFilename")
 	thumbBase64 := a.ReadFirstString("thumbBase64")
 	url := a.ReadFirstString("url")
@@ -120,8 +134,21 @@ func (a *abstractPageDao) ExtractFromJson() {
 	}
 	if len(pathFromDocRoot) == 0 && len(domain) == 0 && len(url) > 0 {
 		parts := strings.Split(url, "/")
-		pathFromDocRoot = strings.Join(parts[4:], "/")
-		domain = parts[2]
+		if len(parts) > 3 {
+			pathFromDocRoot = strings.Join(parts[4:], "/")
+			domain = parts[2]
+		}
+	}
+	if len(createDate) == 0 && len(pathFromDocRoot) > 0 {
+		parts := strings.Split(pathFromDocRoot, "/")
+		if len(parts) > 3 {
+			loc, _ := time.LoadLocation("Europe/Berlin")
+			y, _ := strconv.Atoi(parts[1])
+			m, _ := strconv.Atoi(parts[2])
+			d, _ := strconv.Atoi(parts[3])
+			dt := time.Date(y, time.Month(m), d, 20, 0, 0, 0, loc)
+			createDate = dt.Format(time.RFC1123Z)
+		}
 	}
 
 	a.dto = NewFilledDto(
@@ -137,7 +164,7 @@ func (a *abstractPageDao) ExtractFromJson() {
 		url,
 		domain,
 		pathFromDocRoot,
-		a.dto.FsPath(),
+		fsPath,
 		htmlFilename,
 		thumbBase64)
 }
