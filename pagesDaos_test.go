@@ -24,7 +24,7 @@ func readViaFc(path, file string) []byte {
 }
 
 func readAndGetDto(path, file string) staticIntf.PageDto {
-	a := new(abstractPageDao)
+	a := new(pageDaoReader)
 	a.data = readViaFc(path, file)
 	a.ExtractFromJson()
 	return a.Dto()
@@ -72,6 +72,17 @@ func TestReadFile(t *testing.T) {
 
 	if !reflect.DeepEqual(actual, expected) {
 		t.Error("Expected", actual, "to be", expected)
+	}
+
+	file = "version4.json"
+
+	actual = readAndGetDto(path, file)
+	p3 := NewPostDAO(readViaFc(path, file), path, "")
+	p3.ExtractFromJson()
+	expected = p3.Dto()
+
+	if !reflect.DeepEqual(actual, expected) {
+		t.Error("Expected\n", actual, "to be\n", expected)
 	}
 }
 

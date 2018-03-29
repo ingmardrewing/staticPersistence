@@ -9,6 +9,18 @@ import (
 	"github.com/ingmardrewing/staticIntf"
 )
 
+func NewPageDaoReader(data []byte, path, filename string) *pageDaoReader {
+	d := new(pageDaoReader)
+	dto := NewFilledDto(0,
+		"", "", "", "", "",
+		"", "", "", "", "",
+		path, filename, "", "")
+
+	d.Dto(dto)
+	d.Data(data)
+	return d
+}
+
 type keyPath struct {
 	nodes []string
 }
@@ -76,19 +88,24 @@ func NewKeyCollection() *keyCollection {
 
 	kc.addKeyPath("pathFromDocRoot", &keyPath{[]string{"path"}})
 
+	kc.addKeyPath("fsPath", &keyPath{[]string{"fsPath"}})
+
 	kc.addKeyPath("htmlFilename", &keyPath{[]string{"filename"}})
 
 	kc.addKeyPath("thumbBase64", &keyPath{[]string{"thumbBase64"}})
+
+	kc.addKeyPath("version", &keyPath{[]string{"version"}})
+
 	return kc
 }
 
-type abstractPageDao struct {
+type pageDaoReader struct {
 	data []byte
 	Json
 	dto staticIntf.PageDto
 }
 
-func (a *abstractPageDao) ReadFirstString(key string) string {
+func (a *pageDaoReader) ReadFirstString(key string) string {
 	kc := NewKeyCollection()
 	keys := kc.getKeyCollection(key)
 	for _, k := range keys {
@@ -100,7 +117,7 @@ func (a *abstractPageDao) ReadFirstString(key string) string {
 	return ""
 }
 
-func (a *abstractPageDao) ReadFirstInt(key string) int {
+func (a *pageDaoReader) ReadFirstInt(key string) int {
 	kc := NewKeyCollection()
 	keys := kc.getKeyCollection(key)
 	for _, k := range keys {
@@ -112,8 +129,9 @@ func (a *abstractPageDao) ReadFirstInt(key string) int {
 	return 0
 }
 
-func (a *abstractPageDao) ExtractFromJson() {
+func (a *pageDaoReader) ExtractFromJson() {
 	id := a.ReadFirstInt("id")
+	version := a.ReadFirstInt("version")
 	title := a.ReadFirstString("title")
 	titlePlain := a.ReadFirstString("titlePlain")
 	thumbUrl := a.ReadFirstString("thumbUrl")
@@ -150,6 +168,14 @@ func (a *abstractPageDao) ExtractFromJson() {
 			createDate = dt.Format(time.RFC1123Z)
 		}
 	}
+	if version == 1 && len(fsPath) == 0 && len(url) > 0 {
+		parts := strings.Split(url, "/")
+		if len(parts) > 3 {
+			fsPath = strings.Join(parts[4:], "/")
+			domain = parts[2]
+			pathFromDocRoot = fsPath
+		}
+	}
 
 	a.dto = NewFilledDto(
 		id,
@@ -169,7 +195,7 @@ func (a *abstractPageDao) ExtractFromJson() {
 		thumbBase64)
 }
 
-func (a *abstractPageDao) getDateFromPath(fp string) string {
+func (a *pageDaoReader) getDateFromPath(fp string) string {
 	parts := strings.Split(fp, "/")
 	if len(parts) > 3 {
 		loc, _ := time.LoadLocation("Europe/Berlin")
@@ -182,18 +208,18 @@ func (a *abstractPageDao) getDateFromPath(fp string) string {
 	return ""
 }
 
-func (a *abstractPageDao) Data(data []byte) {
+func (a *pageDaoReader) Data(data []byte) {
 	a.data = data
 }
 
-func (a *abstractPageDao) Dto(dto ...staticIntf.PageDto) staticIntf.PageDto {
+func (a *pageDaoReader) Dto(dto ...staticIntf.PageDto) staticIntf.PageDto {
 	if len(dto) > 0 {
 		a.dto = dto[0]
 	}
 	return a.dto
 }
 
-func (a *abstractPageDao) FillJson() []byte {
+func (a *pageDaoReader) FillJson() []byte {
 	json := fmt.Sprintf(a.Template(),
 		a.dto.ThumbUrl(),
 		a.dto.ImageUrl(),
@@ -210,7 +236,7 @@ func (a *abstractPageDao) FillJson() []byte {
 	return []byte(json)
 }
 
-func (a *abstractPageDao) Template() string {
+func (a *pageDaoReader) Template() string {
 	return `{
 	"version":1,
 	"thumbImg":"%s",
