@@ -28,7 +28,7 @@ func ReadPagesFromDir(dir string) []staticIntf.PageDto {
 }
 
 func getDto(fc fs.FileContainer) staticIntf.PageDto {
-	dao := NewPageDaoReader(fc.GetData(), fc.GetPath(), fc.GetFilename())
+	dao := newPageDaoReader(fc.GetData(), fc.GetPath(), fc.GetFilename())
 	dao.ExtractFromJson()
 	return dao.Dto()
 }
@@ -55,7 +55,7 @@ func WritePostDtoToJson(dto staticIntf.PageDto, path, filename string) {
 }
 
 func writeDtoToJson(dto staticIntf.PageDto, path, filename string) {
-	dao := NewPageDaoReader(nil, path, filename)
+	dao := newPageDaoReader(nil, path, filename)
 	dao.Dto(dto)
 
 	fc := fs.NewFileContainer()
