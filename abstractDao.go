@@ -1,12 +1,25 @@
 package staticPersistence
 
 import (
+	"fmt"
 	"strconv"
 	"strings"
 	"time"
 
 	"github.com/ingmardrewing/staticIntf"
 )
+
+func NewPageDaoReader(data []byte, path, filename string) *pageDaoReader {
+	d := new(pageDaoReader)
+	dto := NewFilledDto(0,
+		"", "", "", "", "",
+		"", "", "", "", "",
+		path, filename, "", "")
+
+	d.Dto(dto)
+	d.Data(data)
+	return d
+}
 
 type keyPath struct {
 	nodes []string
@@ -33,40 +46,66 @@ func NewKeyCollection() *keyCollection {
 	kc := new(keyCollection)
 	kc.pathMap = make(map[string][]*keyPath)
 
+	kc.addKeyPath("url", &keyPath{[]string{"post", "url"}})
+	kc.addKeyPath("url", &keyPath{[]string{"url"}})
+
+	kc.addKeyPath("domain", &keyPath{[]string{"domain"}})
+
+	kc.addKeyPath("id", &keyPath{[]string{"post", "post_id"}})
 	kc.addKeyPath("id", &keyPath{[]string{"page", "post_id"}})
 	kc.addKeyPath("id", &keyPath{[]string{"id"}})
 
 	kc.addKeyPath("title", &keyPath{[]string{"title"}})
+	kc.addKeyPath("title", &keyPath{[]string{"post", "title"}})
+
 	kc.addKeyPath("titlePlain", &keyPath{[]string{"title_plain"}})
+	kc.addKeyPath("titlePlain", &keyPath{[]string{"title"}})
 
 	kc.addKeyPath("thumbUrl", &keyPath{[]string{"thumbUrl"}})
 	kc.addKeyPath("thumbUrl", &keyPath{[]string{"thumbImg"}})
+	kc.addKeyPath("thumbUrl", &keyPath{[]string{"imgUrl"}})
 
 	kc.addKeyPath("imageUrl", &keyPath{[]string{"imageUrl"}})
 	kc.addKeyPath("imageUrl", &keyPath{[]string{"postImg"}})
+	kc.addKeyPath("imageUrl", &keyPath{[]string{"imgUrl"}})
 
 	kc.addKeyPath("description", &keyPath{[]string{"page", "excerpt"}})
-	kc.addKeyPath("disqusId", &keyPath{[]string{"page", "custom_fields", "dsq_thread_id", "[0]"}})
+	kc.addKeyPath("description", &keyPath{[]string{"description"}})
+	kc.addKeyPath("description", &keyPath{[]string{"excerpt"}})
 
+	kc.addKeyPath("disqusId", &keyPath{[]string{"page", "custom_fields", "dsq_thread_id", "[0]"}})
+	kc.addKeyPath("disqusId", &keyPath{[]string{"dsq_thread_id"}})
+	kc.addKeyPath("disqusId", &keyPath{[]string{"disqusId"}})
+
+	kc.addKeyPath("createDate", &keyPath{[]string{"post", "date"}})
 	kc.addKeyPath("createDate", &keyPath{[]string{"page", "date"}})
 	kc.addKeyPath("createDate", &keyPath{[]string{"createDate"}})
+	kc.addKeyPath("createDate", &keyPath{[]string{"date"}})
 
 	kc.addKeyPath("content", &keyPath{[]string{"content"}})
+	kc.addKeyPath("content", &keyPath{[]string{"post", "content"}})
+	kc.addKeyPath("content", &keyPath{[]string{"act"}})
+
 	kc.addKeyPath("pathFromDocRoot", &keyPath{[]string{"path"}})
+
+	kc.addKeyPath("fsPath", &keyPath{[]string{"fsPath"}})
 
 	kc.addKeyPath("htmlFilename", &keyPath{[]string{"filename"}})
 
-	kc.addKeyPath("ThumbBase64", &keyPath{[]string{"thumbBase64"}})
+	kc.addKeyPath("thumbBase64", &keyPath{[]string{"thumbBase64"}})
+
+	kc.addKeyPath("version", &keyPath{[]string{"version"}})
+
 	return kc
 }
 
-type abstractPageDao struct {
+type pageDaoReader struct {
 	data []byte
 	Json
 	dto staticIntf.PageDto
 }
 
-func (a *abstractPageDao) ReadFirstString(key string) string {
+func (a *pageDaoReader) ReadFirstString(key string) string {
 	kc := NewKeyCollection()
 	keys := kc.getKeyCollection(key)
 	for _, k := range keys {
@@ -78,7 +117,7 @@ func (a *abstractPageDao) ReadFirstString(key string) string {
 	return ""
 }
 
-func (a *abstractPageDao) ReadFirstInt(key string) int {
+func (a *pageDaoReader) ReadFirstInt(key string) int {
 	kc := NewKeyCollection()
 	keys := kc.getKeyCollection(key)
 	for _, k := range keys {
@@ -90,19 +129,53 @@ func (a *abstractPageDao) ReadFirstInt(key string) int {
 	return 0
 }
 
-func (a *abstractPageDao) ExtractFromJson() {
+func (a *pageDaoReader) ExtractFromJson() {
 	id := a.ReadFirstInt("id")
+	version := a.ReadFirstInt("version")
 	title := a.ReadFirstString("title")
 	titlePlain := a.ReadFirstString("titlePlain")
-	thumbUrl := a.ReadFirstString("thumbImg")
-	imageUrl := a.ReadFirstString("postImg")
+	thumbUrl := a.ReadFirstString("thumbUrl")
+	imageUrl := a.ReadFirstString("imageUrl")
 	description := a.ReadFirstString("description")
 	disqusId := a.ReadFirstString("disqusId")
 	createDate := a.ReadFirstString("createDate")
 	content := a.ReadFirstString("content")
 	pathFromDocRoot := a.ReadFirstString("pathFromDocRoot")
+	fsPath := a.ReadFirstString("fsPath")
 	htmlFilename := a.ReadFirstString("htmlFilename")
 	thumbBase64 := a.ReadFirstString("thumbBase64")
+	url := a.ReadFirstString("url")
+	domain := a.ReadFirstString("domain")
+
+	if len(htmlFilename) == 0 {
+		htmlFilename = "index.html"
+	}
+	if len(pathFromDocRoot) == 0 && len(domain) == 0 && len(url) > 0 {
+		parts := strings.Split(url, "/")
+		if len(parts) > 3 {
+			pathFromDocRoot = strings.Join(parts[4:], "/")
+			domain = parts[2]
+		}
+	}
+	if len(createDate) == 0 && len(pathFromDocRoot) > 0 {
+		parts := strings.Split(pathFromDocRoot, "/")
+		if len(parts) > 3 {
+			loc, _ := time.LoadLocation("Europe/Berlin")
+			y, _ := strconv.Atoi(parts[1])
+			m, _ := strconv.Atoi(parts[2])
+			d, _ := strconv.Atoi(parts[3])
+			dt := time.Date(y, time.Month(m), d, 20, 0, 0, 0, loc)
+			createDate = dt.Format(time.RFC1123Z)
+		}
+	}
+	if version == 1 && len(fsPath) == 0 && len(url) > 0 {
+		parts := strings.Split(url, "/")
+		if len(parts) > 3 {
+			fsPath = strings.Join(parts[4:], "/")
+			domain = parts[2]
+			pathFromDocRoot = fsPath
+		}
+	}
 
 	a.dto = NewFilledDto(
 		id,
@@ -114,15 +187,15 @@ func (a *abstractPageDao) ExtractFromJson() {
 		disqusId,
 		createDate,
 		content,
-		"",
-		"",
+		url,
+		domain,
 		pathFromDocRoot,
-		a.dto.FsPath(),
+		fsPath,
 		htmlFilename,
 		thumbBase64)
 }
 
-func (a *abstractPageDao) getDateFromPath(fp string) string {
+func (a *pageDaoReader) getDateFromPath(fp string) string {
 	parts := strings.Split(fp, "/")
 	if len(parts) > 3 {
 		loc, _ := time.LoadLocation("Europe/Berlin")
@@ -135,13 +208,48 @@ func (a *abstractPageDao) getDateFromPath(fp string) string {
 	return ""
 }
 
-func (a *abstractPageDao) Data(data []byte) {
+func (a *pageDaoReader) Data(data []byte) {
 	a.data = data
 }
 
-func (a *abstractPageDao) Dto(dto ...staticIntf.PageDto) staticIntf.PageDto {
+func (a *pageDaoReader) Dto(dto ...staticIntf.PageDto) staticIntf.PageDto {
 	if len(dto) > 0 {
 		a.dto = dto[0]
 	}
 	return a.dto
+}
+
+func (a *pageDaoReader) FillJson() []byte {
+	json := fmt.Sprintf(a.Template(),
+		a.dto.ThumbUrl(),
+		a.dto.ImageUrl(),
+		a.dto.HtmlFilename(),
+		a.dto.Id(),
+		a.dto.CreateDate(),
+		a.dto.Url(),
+		a.dto.Title(),
+		a.dto.TitlePlain(),
+		a.dto.Description(),
+		a.dto.Content(),
+		a.dto.DisqusId(),
+		a.dto.ThumbBase64())
+	return []byte(json)
+}
+
+func (a *pageDaoReader) Template() string {
+	return `{
+	"version":1,
+	"thumbImg":"%s",
+	"postImg":"%s",
+	"filename":"%s",
+	"id":%d,
+	"date":"%s",
+	"url":"%s",
+	"title":"%s",
+	"title_plain":"%s",
+	"excerpt":"%s",
+	"content":"%s",
+	"dsq_thread_id":"%s"
+	"thumbBase64":"%s"
+}`
 }
