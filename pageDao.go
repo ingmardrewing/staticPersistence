@@ -42,7 +42,7 @@ func (k *keyCollection) getKeyCollection(key string) []*keyPath {
 	return k.pathMap[key]
 }
 
-func NewKeyCollection() *keyCollection {
+func newKeyCollection() *keyCollection {
 	kc := new(keyCollection)
 	kc.pathMap = make(map[string][]*keyPath)
 
@@ -106,7 +106,7 @@ type pageDaoReader struct {
 }
 
 func (a *pageDaoReader) ReadFirstString(key string) string {
-	kc := NewKeyCollection()
+	kc := newKeyCollection()
 	keys := kc.getKeyCollection(key)
 	for _, k := range keys {
 		txt := a.ReadString(a.data, k.nodes...)
@@ -118,7 +118,7 @@ func (a *pageDaoReader) ReadFirstString(key string) string {
 }
 
 func (a *pageDaoReader) ReadFirstInt(key string) int {
-	kc := NewKeyCollection()
+	kc := newKeyCollection()
 	keys := kc.getKeyCollection(key)
 	for _, k := range keys {
 		number := a.ReadInt(a.data, k.nodes...)
@@ -127,6 +127,50 @@ func (a *pageDaoReader) ReadFirstInt(key string) int {
 		}
 	}
 	return 0
+}
+
+func (a *pageDaoReader) checkHtmlFilename(htmlFilename string) string {
+	if len(htmlFilename) == 0 {
+		return "index.html"
+	}
+	return htmlFilename
+}
+
+func (a *pageDaoReader) generateDomainAndPathFromDocRoot(pathFromDocRoot, domain, url string) (string, string) {
+	if len(pathFromDocRoot) == 0 && len(domain) == 0 && len(url) > 0 {
+		parts := strings.Split(url, "/")
+		if len(parts) > 3 {
+			return strings.Join(parts[4:], "/"), parts[2]
+		}
+	}
+	return pathFromDocRoot, domain
+}
+
+func (a *pageDaoReader) generateCreateDateFromPathFromDocRoot(createDate, pathFromDocRoot string) string {
+	if len(createDate) == 0 && len(pathFromDocRoot) > 0 {
+		parts := strings.Split(pathFromDocRoot, "/")
+		if len(parts) > 3 {
+			loc, _ := time.LoadLocation("Europe/Berlin")
+			y, _ := strconv.Atoi(parts[1])
+			m, _ := strconv.Atoi(parts[2])
+			d, _ := strconv.Atoi(parts[3])
+			dt := time.Date(y, time.Month(m), d, 20, 0, 0, 0, loc)
+			return dt.Format(time.RFC1123Z)
+		}
+	}
+	return createDate
+}
+
+func (a *pageDaoReader) extractFsPathDomainAndPathFromDocRootFromUrl(version int, fsPath, domain, pathFromDocRoot, url string) (string, string, string) {
+	if version == 1 && len(fsPath) == 0 && len(url) > 0 {
+		parts := strings.Split(url, "/")
+		if len(parts) > 3 {
+			fsPath = strings.Join(parts[4:], "/")
+			domain = parts[2]
+			return fsPath, domain, fsPath
+		}
+	}
+	return fsPath, domain, pathFromDocRoot
 }
 
 func (a *pageDaoReader) ExtractFromJson() {
@@ -142,40 +186,14 @@ func (a *pageDaoReader) ExtractFromJson() {
 	content := a.ReadFirstString("content")
 	pathFromDocRoot := a.ReadFirstString("pathFromDocRoot")
 	fsPath := a.ReadFirstString("fsPath")
-	htmlFilename := a.ReadFirstString("htmlFilename")
+	htmlFilename := a.checkHtmlFilename(a.ReadFirstString("htmlFilename"))
 	thumbBase64 := a.ReadFirstString("thumbBase64")
 	url := a.ReadFirstString("url")
 	domain := a.ReadFirstString("domain")
 
-	if len(htmlFilename) == 0 {
-		htmlFilename = "index.html"
-	}
-	if len(pathFromDocRoot) == 0 && len(domain) == 0 && len(url) > 0 {
-		parts := strings.Split(url, "/")
-		if len(parts) > 3 {
-			pathFromDocRoot = strings.Join(parts[4:], "/")
-			domain = parts[2]
-		}
-	}
-	if len(createDate) == 0 && len(pathFromDocRoot) > 0 {
-		parts := strings.Split(pathFromDocRoot, "/")
-		if len(parts) > 3 {
-			loc, _ := time.LoadLocation("Europe/Berlin")
-			y, _ := strconv.Atoi(parts[1])
-			m, _ := strconv.Atoi(parts[2])
-			d, _ := strconv.Atoi(parts[3])
-			dt := time.Date(y, time.Month(m), d, 20, 0, 0, 0, loc)
-			createDate = dt.Format(time.RFC1123Z)
-		}
-	}
-	if version == 1 && len(fsPath) == 0 && len(url) > 0 {
-		parts := strings.Split(url, "/")
-		if len(parts) > 3 {
-			fsPath = strings.Join(parts[4:], "/")
-			domain = parts[2]
-			pathFromDocRoot = fsPath
-		}
-	}
+	pathFromDocRoot, domain = a.generateDomainAndPathFromDocRoot(pathFromDocRoot, domain, url)
+	createDate = a.generateCreateDateFromPathFromDocRoot(createDate, pathFromDocRoot)
+	fsPath, domain, pathFromDocRoot = a.extractFsPathDomainAndPathFromDocRootFromUrl(version, fsPath, domain, pathFromDocRoot, url)
 
 	a.dto = NewFilledDto(
 		id,
