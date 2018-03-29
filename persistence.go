@@ -18,48 +18,19 @@ type PageDao interface {
 	Data([]byte)
 }
 
-func ReadNarrativePages(pagesDir string) []staticIntf.PageDto {
-	fileContainers := ReadJsonFilesFromDir(pagesDir)
+func ReadPagesFromDir(dir string) []staticIntf.PageDto {
+	fileContainers := ReadJsonFilesFromDir(dir)
 	dtos := []staticIntf.PageDto{}
 	for _, fc := range fileContainers {
-		dao := NewNarrativeDAO(fc.GetData(), fc.GetPath(), fc.GetFilename())
-		dao.ExtractFromJson()
-		dtos = append(dtos, dao.Dto())
+		dtos = append(dtos, getDto(fc))
 	}
 	return dtos
 }
 
-func ReadPages(pagesDir string) []staticIntf.PageDto {
-	fileContainers := ReadJsonFilesFromDir(pagesDir)
-	dtos := []staticIntf.PageDto{}
-	for _, fc := range fileContainers {
-		dao := NewPageDAO(fc.GetData(), fc.GetPath(), fc.GetFilename())
-		dao.ExtractFromJson()
-		dtos = append(dtos, dao.Dto())
-	}
-	return dtos
-}
-
-func ReadMarginals(marginalsDir string) []staticIntf.PageDto {
-	fileContainers := ReadJsonFilesFromDir(marginalsDir)
-	dtos := []staticIntf.PageDto{}
-	for _, fc := range fileContainers {
-		dao := NewMarginalDAO(fc.GetData(), fc.GetPath(), fc.GetFilename())
-		dao.ExtractFromJson()
-		dtos = append(dtos, dao.Dto())
-	}
-	return dtos
-}
-
-func ReadPosts(postsDir string) []staticIntf.PageDto {
-	fileContainers := ReadJsonFilesFromDir(postsDir)
-	dtos := []staticIntf.PageDto{}
-	for _, fc := range fileContainers {
-		dao := NewPostDAO(fc.GetData(), fc.GetPath(), fc.GetFilename())
-		dao.ExtractFromJson()
-		dtos = append(dtos, dao.Dto())
-	}
-	return dtos
+func getDto(fc fs.FileContainer) staticIntf.PageDto {
+	dao := NewPageDaoReader(fc.GetData(), fc.GetPath(), fc.GetFilename())
+	dao.ExtractFromJson()
+	return dao.Dto()
 }
 
 func ReadJsonFilesFromDir(path string) []fs.FileContainer {
@@ -76,20 +47,19 @@ func ReadJsonFilesFromDir(path string) []fs.FileContainer {
 }
 
 func WriteMarginalDtoToJson(dto staticIntf.PageDto, path, filename string) {
-	dao := NewMarginalDAO(nil, path, filename)
-	dao.Dto(dto)
-	writeJson(dao.FillJson(), path, filename)
+	writeDtoToJson(dto, path, filename)
 }
 
 func WritePostDtoToJson(dto staticIntf.PageDto, path, filename string) {
-	dao := NewPostDAO(nil, path, filename)
-	dao.Dto(dto)
-	writeJson(dao.FillJson(), path, filename)
+	writeDtoToJson(dto, path, filename)
 }
 
-func writeJson(json []byte, path, filename string) {
+func writeDtoToJson(dto staticIntf.PageDto, path, filename string) {
+	dao := NewPageDaoReader(nil, path, filename)
+	dao.Dto(dto)
+
 	fc := fs.NewFileContainer()
-	fc.SetDataAsString(string(json))
+	fc.SetDataAsString(string(dao.FillJson()))
 	fc.SetPath(path)
 	fc.SetFilename(filename)
 	fc.Write()
