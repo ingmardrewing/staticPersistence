@@ -9,7 +9,7 @@ import (
 	"github.com/ingmardrewing/staticIntf"
 )
 
-func NewPageDaoReader(data []byte, path, filename string) *pageDaoReader {
+func newPageDaoReader(data []byte, path, filename string) *pageDaoReader {
 	d := new(pageDaoReader)
 	dto := NewFilledDto(0,
 		"", "", "", "", "",
@@ -211,19 +211,6 @@ func (a *pageDaoReader) ExtractFromJson() {
 		fsPath,
 		htmlFilename,
 		thumbBase64)
-}
-
-func (a *pageDaoReader) getDateFromPath(fp string) string {
-	parts := strings.Split(fp, "/")
-	if len(parts) > 3 {
-		loc, _ := time.LoadLocation("Europe/Berlin")
-		y, _ := strconv.Atoi(parts[1])
-		m, _ := strconv.Atoi(parts[2])
-		d, _ := strconv.Atoi(parts[3])
-		date := time.Date(y, time.Month(m), d, 20, 0, 0, 0, loc)
-		return date.Format(time.RFC1123Z)
-	}
-	return ""
 }
 
 func (a *pageDaoReader) Data(data []byte) {
