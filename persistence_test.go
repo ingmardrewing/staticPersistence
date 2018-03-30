@@ -30,9 +30,8 @@ func TestReadPagesFromDir(t *testing.T) {
 	dir := path.Join(currentDir(), "testResources/writeTest")
 	os.Mkdir(dir, 0755)
 
-	WriteMarginalDtoToJson(dto1, dir, "t1.json")
-
-	WritePostDtoToJson(dto2, dir, "t2.json")
+	WritePageDtoToJson(dto1, dir, "t2.json")
+	WritePageDtoToJson(dto2, dir, "t2.json")
 
 	actualSize := len(fs.ReadDirEntriesEndingWith(dir))
 	expectedSize := 3
