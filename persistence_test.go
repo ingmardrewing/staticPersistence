@@ -32,7 +32,7 @@ func TestReadPagesFromDir(t *testing.T) {
 
 	WriteMarginalDtoToJson(dto1, dir, "t1.json")
 
-	WriteMarginalDtoToJson(dto2, dir, "t2.json")
+	WritePostDtoToJson(dto2, dir, "t2.json")
 
 	actualSize := len(fs.ReadDirEntriesEndingWith(dir))
 	expectedSize := 3
