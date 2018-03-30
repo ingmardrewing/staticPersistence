@@ -1,0 +1,109 @@
+[
+  {
+    "domain": "drewing.de",
+    "addPostDir": "/Users/drewing/Desktop/drewing2018/add/",
+    "src": {
+      "postsDir": "/Users/drewing/Desktop/drewing2018/posts",
+      "marginalDir": "/Users/drewing/Desktop/drewing2018/marginal/",
+      "mainPages": "/Users/drewing/Desktop/drewing2018/main/"
+    },
+    "defaultMeta":{
+      "blogExcerpt": "A blog containing texts, drawings, graphic narratives/novels and (rarely) code snippets by Ingmar Drewing.",
+      "naviPageTitle" : "drewing.de - personal blog of Ingmar Drewing",
+      "naviPageExcerpt": "Personal blog of Ingmar Drewing"
+    },
+    "context": {
+      "twitterHandle": "@ingmardrewing",
+      "topic": "Illustration",
+      "tags": "comic, graphic novel, webcomic, science-fiction, sci-fi",
+      "cardType": "summary_large_image",
+      "section": "article",
+      "disqusShortname": "drewing",
+      "header": [
+        {
+          "label": "blog",
+          "externalLink": "",
+          "path": "/blog/",
+          "filename": "index.html"
+        },
+        {
+          "label": "twitter",
+          "externalLink": "https://twitter.com/ingmardrewing",
+          "path": "",
+          "filename": ""
+        },
+        {
+          "label": "facebook",
+          "externalLink": "https://www.facebook.com/drewing.de",
+          "path": "",
+          "filename": ""
+        }
+      ],
+      "footer": [
+        {
+          "label": "rss",
+          "externalLink": "",
+          "path": "/blog/",
+          "filename": "rss.xml"
+        }
+      ]
+    },
+    "deploy":{
+      "targetDir": "/Users/drewing/Sites/drewing2018/",
+      "cssFileName": "/styles.css",
+      "jsFileName": "logic.js",
+      "blogDir": "/blog/",
+      "rssPath": "/blog/",
+      "rssFilename": "rss.xml"
+    }
+  },
+  {
+    "domain": "devabo.de",
+    "addPageDir": "/Users/drewing/Desktop/drewing2018/add/",
+    "src": {
+      "narrative": "/Users/drewing/Desktop/drewing2018/narrative/",
+      "narrativeMarginals": "/Users/drewing/Desktop/drewing2018/narrativemarginal/"
+    },
+    "defaultMeta":{
+      "blogExcerpt": "A blog containing texts, drawings, graphic narratives/novels and (rarely) code snippets by Ingmar Drewing.",
+      "naviPageTitle" : "drewing.de - personal blog of Ingmar Drewing",
+      "naviPageExcerpt": "Personal blog of Ingmar Drewing"
+    },
+    "context": {
+      "twitterHandle": "@ingmardrewing",
+      "topic": "Illustration",
+      "tags": "comic, graphic novel, webcomic, science-fiction, sci-fi",
+      "cardType": "summary_large_image",
+      "section": "article",
+      "disqusShortname": "devabode",
+      "header": [],
+      "footer": [
+        {
+          "label": "twitter",
+          "externalLink": "https://twitter.com/devabo_de",
+          "path": "",
+          "filename": ""
+        },
+        {
+          "label": "facebook",
+          "externalLink": "https://www.facebook.com/www.devabo.de",
+          "path": "",
+          "filename": ""
+        },
+        {
+          "label": "rss",
+          "externalLink": "",
+          "path": "/",
+          "filename": "rss.xml"
+        }
+      ]
+    },
+    "deploy":{
+      "targetDir": "/Users/drewing/Sites/drewing2018/devabo.de/",
+      "cssFileName": "/styles.css",
+      "jsFileName": "/logic.js",
+      "rssPath": "",
+      "rssFilename": "rss.xml"
+    }
+  }
+]

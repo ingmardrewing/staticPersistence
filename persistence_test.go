@@ -1,13 +1,12 @@
 package staticPersistence
 
 import (
+	"os"
 	"path"
-	"reflect"
 	"runtime"
 	"testing"
 
 	"github.com/ingmardrewing/fs"
-	"github.com/ingmardrewing/staticIntf"
 )
 
 func currentDir() string {
@@ -15,37 +14,32 @@ func currentDir() string {
 	return path.Dir(filename)
 }
 
-func readViaFc(path, file string) []byte {
-	fc := fs.NewFileContainer()
-	fc.SetPath(path)
-	fc.SetFilename(file)
-	fc.Read()
-	return fc.GetData()
-}
+func TestReadPagesFromDir(t *testing.T) {
+	p := path.Join(currentDir(), "testResources/posts/")
+	dtos := ReadPagesFromDir(p)
 
-func readAndGetDto(path, file string) staticIntf.PageDto {
-	a := new(pageDaoReader)
-	a.data = readViaFc(path, file)
-	a.ExtractFromJson()
-	return a.Dto()
-}
+	actual := len(dtos)
+	expected := 5
 
-func TestReadFile(t *testing.T) {
-	path := path.Join(currentDir(), "testResources", "posts")
-	file := "version1.json"
-
-	actual := readAndGetDto(path, file)
-	expected := newVersion1Dto()
-
-	if !reflect.DeepEqual(actual, expected) {
-		t.Error("Expected", actual, "to be", expected)
+	if actual != expected {
+		t.Error("Expected", expected, "dtos, but got", actual)
 	}
-}
 
-func newVersion1Dto() staticIntf.PageDto {
-	return NewFilledDto(1,
-		"titleValue", "title_plainValue", "thumbImageValue",
-		"postImageValue", "excerptValue", "dsq_thread_idValue",
-		"dateValue", "contentValue", "urlValue", "",
-		"", "", "filenameValue", "")
+	dto1 := dtos[0]
+	dto2 := dtos[1]
+	dir := path.Join(currentDir(), "testResources/writeTest")
+	os.Mkdir(dir, 0755)
+
+	WriteMarginalDtoToJson(dto1, dir, "t1.json")
+
+	WritePostDtoToJson(dto2, dir, "t2.json")
+
+	actualSize := len(fs.ReadDirEntriesEndingWith(dir))
+	expectedSize := 3
+
+	if actual != expected {
+		t.Error("Expected number of files was ", expectedSize, ", but found", actualSize)
+	}
+
+	os.RemoveAll(dir)
 }

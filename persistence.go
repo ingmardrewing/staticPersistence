@@ -6,11 +6,6 @@ import (
 )
 
 // dao versions
-const (
-	v0 = iota
-	v1 = iota
-)
-
 type PageDao interface {
 	Dto(...staticIntf.PageDto) staticIntf.PageDto
 	ExtractFromJson()

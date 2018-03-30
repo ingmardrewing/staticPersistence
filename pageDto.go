@@ -44,9 +44,9 @@ func (p pageDTO) DisqusId() string { return p.disqusId }
 
 func (p pageDTO) CreateDate() string { return p.createDate }
 
-func (p pageDTO) Category() string { return p.content }
-
 func (p pageDTO) Content() string { return p.content }
+
+func (p pageDTO) Category() string { return p.content }
 
 func (p pageDTO) ThumbBase64() string { return p.thumbBase64 }
 
