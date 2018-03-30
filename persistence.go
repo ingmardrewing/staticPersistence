@@ -41,15 +41,7 @@ func ReadJsonFilesFromDir(path string) []fs.FileContainer {
 	return fileContainers
 }
 
-func WriteMarginalDtoToJson(dto staticIntf.PageDto, path, filename string) {
-	writeDtoToJson(dto, path, filename)
-}
-
-func WritePostDtoToJson(dto staticIntf.PageDto, path, filename string) {
-	writeDtoToJson(dto, path, filename)
-}
-
-func writeDtoToJson(dto staticIntf.PageDto, path, filename string) {
+func WritePageDtoToJson(dto staticIntf.PageDto, path, filename string) {
 	dao := newPageDaoReader(nil, path, filename)
 	dao.Dto(dto)
 
