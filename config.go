@@ -26,18 +26,20 @@ type Link struct {
 	Path         string `json:"path"`
 }
 
+type Src struct {
+	Dir    string `json:"dir"`
+	Type   string `json:"type"`
+	SubDir string `json:"subDir"`
+}
+
 type JsonConfig struct {
-	Domain     string `json:"domain"`
-	AddPostDir string `json: "addPostDir"`
-	AddPageDir string `json: "addPageDir"`
-	Src        struct {
-		PostsDir           string `json: "postsDir"`
-		MarginalDir        string `json: "marginalDir"`
-		MainPages          string `json: "mainPages"`
-		Narrative          string `json: "narrative"`
-		NarrativeMarginals string `json: "narrativeMarginals"`
-	} `json: "src"`
-	DefaultMeta struct {
+	Domain       string `json:"domain"`
+	AddPostDir   string `json: "addPostDir"`
+	WritePostDir string `json: "writePostDir"`
+	AddPageDir   string `json: "addPageDir"`
+	WritePageDir string `json: "writePageDir"`
+	Src          []Src  `json: "src"`
+	DefaultMeta  struct {
 		BlogExcerpt     string `json: "blogExcerpt"`
 		NaviPageTitle   string `json: "naviPageTitle"`
 		NaviPageExcerpt string `json: "naviPageExcerpt"`
