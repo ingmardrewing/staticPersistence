@@ -7,6 +7,7 @@ import (
 )
 
 // Reads the json config for the sites
+// returning a JsonConfig
 func ReadConfig(path, file string) []JsonConfig {
 	fc := fs.NewFileContainer()
 	fc.SetFilename(file)
