@@ -21,7 +21,7 @@ func ReadConfig(path, file string) []JsonConfig {
 
 type Link struct {
 	Label        string `json:"label"`
-	ExternalLink string `json: "externalLink"`
+	ExternalLink string `json:"externalLink"`
 	FileName     string `json:"filename"`
 	Path         string `json:"path"`
 }
@@ -34,36 +34,36 @@ type Src struct {
 
 type JsonConfig struct {
 	Domain       string `json:"domain"`
-	AddPostDir   string `json: "addPostDir"`
-	WritePostDir string `json: "writePostDir"`
-	AddPageDir   string `json: "addPageDir"`
-	WritePageDir string `json: "writePageDir"`
-	Src          []Src  `json: "src"`
+	AddPostDir   string `json:"addPostDir"`
+	WritePostDir string `json:"writePostDir"`
+	AddPageDir   string `json:"addPageDir"`
+	WritePageDir string `json:"writePageDir"`
+	Src          []Src  `json:"src"`
 	DefaultMeta  struct {
-		BlogExcerpt     string `json: "blogExcerpt"`
-		NaviPageTitle   string `json: "naviPageTitle"`
-		NaviPageExcerpt string `json: "naviPageExcerpt"`
-	} `json: "defaultMeta"`
+		BlogExcerpt     string `json:"blogExcerpt"`
+		NaviPageTitle   string `json:"naviPageTitle"`
+		NaviPageExcerpt string `json:"naviPageExcerpt"`
+	} `json:"defaultMeta"`
 	Context struct {
-		TwitterHandle   string `json: "twitterHandle"`
-		Topic           string `json: "topic"`
-		Tags            string `json: "tags"`
-		CardType        string `json: "cardType"`
-		Section         string `json: "section"`
-		FbPage          string `json: "fbPage"`
-		TwitterPage     string `json: "twitterPage"`
-		DisqusShortname string `json: "disqusShortname"`
-		FacebookShare   string `json: "facebookShare"`
-		TellAFriend     string `json: "tellAFriend"`
-		Header          []Link `json: "header"`
-		Footer          []Link `json: "footer"`
-	} `json: "context"`
+		TwitterHandle   string `json:"twitterHandle"`
+		Topic           string `json:"topic"`
+		Tags            string `json:"tags"`
+		CardType        string `json:"cardType"`
+		Section         string `json:"section"`
+		FbPage          string `json:"fbPage"`
+		TwitterPage     string `json:"twitterPage"`
+		DisqusShortname string `json:"disqusShortname"`
+		FacebookShare   string `json:"facebookShare"`
+		TellAFriend     string `json:"tellAFriend"`
+		MainLinks       []Link `json:"header"`
+		MarginalLinks   []Link `json:"footer"`
+	} `json:"context"`
 	Deploy struct {
-		TargetDir   string `json: "targetDir"`
-		CssFileName string `json: "cssFileName"`
-		JsFileName  string `json: "jsFileName"`
-		BlogDir     string `json: "blog"`
-		RssPath     string `json: "rssPath"`
-		RssFilename string `json: "rssFilename"`
-	} `json: "deploy"`
+		TargetDir   string `json:"targetDir"`
+		CssFileName string `json:"cssFileName"`
+		JsFileName  string `json:"jsFileName"`
+		BlogDir     string `json:"blog"`
+		RssPath     string `json:"rssPath"`
+		RssFilename string `json:"rssFilename"`
+	} `json:"deploy"`
 }
