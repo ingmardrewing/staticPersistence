@@ -6,6 +6,7 @@ import (
 	"github.com/ingmardrewing/fs"
 )
 
+// Reads the json config for the sites
 func ReadConfig(path, file string) []JsonConfig {
 	fc := fs.NewFileContainer()
 	fc.SetFilename(file)
