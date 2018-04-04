@@ -96,8 +96,8 @@ func TestFillJson(t *testing.T) {
 	"title_plain":"%s",
 	"excerpt":"%s",
 	"content":"%s",
-	"dsq_thread_id":"%s"
-	"thumbBase64":"%s"
+	"dsq_thread_id":"%s",
+	"thumbBase64":"%s",
 	"category":"%s"
 }`,
 		dto.ThumbUrl(),
