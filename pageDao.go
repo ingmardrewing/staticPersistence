@@ -259,8 +259,8 @@ func (a *pageDaoReader) Template() string {
 	"title_plain":"%s",
 	"excerpt":"%s",
 	"content":"%s",
-	"dsq_thread_id":"%s"
-	"thumbBase64":"%s"
+	"dsq_thread_id":"%s",
+	"thumbBase64":"%s",
 	"category":"%s"
 }`
 }
