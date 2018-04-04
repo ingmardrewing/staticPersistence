@@ -6,11 +6,13 @@ func NewFilledDto(id int,
 	title, titlePlain, thumbUrl,
 	imageUrl, description, disqusId,
 	createDate, content, url, domain,
-	path, fspath, htmlfilename, thumbBase64 string) staticIntf.PageDto {
+	path, fspath, htmlfilename,
+	thumbBase64, category string) staticIntf.PageDto {
+
 	return &pageDTO{id, title, titlePlain, thumbUrl,
 		imageUrl, description, disqusId,
 		createDate, content, url, domain,
-		path, fspath, htmlfilename, thumbBase64}
+		path, fspath, htmlfilename, thumbBase64, category}
 }
 
 // docDtO
@@ -19,7 +21,8 @@ type pageDTO struct {
 	title, titlePlain, thumbUrl,
 	imageUrl, description, disqusId,
 	createDate, content, url, domain,
-	path, fspath, htmlfilename, thumbBase64 string
+	path, fspath, htmlfilename,
+	thumbBase64, category string
 }
 
 func (p pageDTO) FsPath() string { return p.fspath }
@@ -46,7 +49,7 @@ func (p pageDTO) CreateDate() string { return p.createDate }
 
 func (p pageDTO) Content() string { return p.content }
 
-func (p pageDTO) Category() string { return p.content }
+func (p pageDTO) Category() string { return p.category }
 
 func (p pageDTO) ThumbBase64() string { return p.thumbBase64 }
 

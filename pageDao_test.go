@@ -76,7 +76,8 @@ func TestFillJson(t *testing.T) {
 		"pathValue",
 		"fspathValue",
 		"htmlfilenameValue",
-		"thumbBase64Value")
+		"thumbBase64Value",
+		"categoryValue")
 
 	d := new(pageDaoReader)
 	d.Dto(dto)
@@ -97,6 +98,7 @@ func TestFillJson(t *testing.T) {
 	"content":"%s",
 	"dsq_thread_id":"%s"
 	"thumbBase64":"%s"
+	"category":"%s"
 }`,
 		dto.ThumbUrl(),
 		dto.ImageUrl(),
@@ -109,7 +111,8 @@ func TestFillJson(t *testing.T) {
 		dto.Description(),
 		dto.Content(),
 		dto.DisqusId(),
-		dto.ThumbBase64())
+		dto.ThumbBase64(),
+		dto.Category())
 
 	if actual != expected {
 		t.Error("Expected", actual, "to be", expected)
@@ -133,5 +136,5 @@ func newVersion1Dto() staticIntf.PageDto {
 		"titleValue", "title_plainValue", "thumbImageValue",
 		"postImageValue", "excerptValue", "dsq_thread_idValue",
 		"dateValue", "contentValue", "urlValue", "",
-		"", "", "filenameValue", "")
+		"", "", "filenameValue", "", "")
 }

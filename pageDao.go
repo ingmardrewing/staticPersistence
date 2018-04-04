@@ -14,7 +14,7 @@ func newPageDaoReader(data []byte, path, filename string) *pageDaoReader {
 	dto := NewFilledDto(0,
 		"", "", "", "", "",
 		"", "", "", "", "",
-		path, filename, "", "")
+		path, filename, "", "", "")
 
 	d.Dto(dto)
 	d.Data(data)
@@ -81,6 +81,8 @@ func newKeyCollection() *keyCollection {
 	kc.addKeyPath("createDate", &keyPath{[]string{"page", "date"}})
 	kc.addKeyPath("createDate", &keyPath{[]string{"createDate"}})
 	kc.addKeyPath("createDate", &keyPath{[]string{"date"}})
+
+	kc.addKeyPath("category", &keyPath{[]string{"category"}})
 
 	kc.addKeyPath("content", &keyPath{[]string{"content"}})
 	kc.addKeyPath("content", &keyPath{[]string{"post", "content"}})
@@ -190,6 +192,7 @@ func (a *pageDaoReader) ExtractFromJson() {
 	thumbBase64 := a.ReadFirstString("thumbBase64")
 	url := a.ReadFirstString("url")
 	domain := a.ReadFirstString("domain")
+	category := a.ReadFirstString("category")
 
 	pathFromDocRoot, domain = a.generateDomainAndPathFromDocRoot(pathFromDocRoot, domain, url)
 	createDate = a.generateCreateDateFromPathFromDocRoot(createDate, pathFromDocRoot)
@@ -210,7 +213,8 @@ func (a *pageDaoReader) ExtractFromJson() {
 		pathFromDocRoot,
 		fsPath,
 		htmlFilename,
-		thumbBase64)
+		thumbBase64,
+		category)
 }
 
 func (a *pageDaoReader) Data(data []byte) {
@@ -237,7 +241,8 @@ func (a *pageDaoReader) FillJson() []byte {
 		a.dto.Description(),
 		a.dto.Content(),
 		a.dto.DisqusId(),
-		a.dto.ThumbBase64())
+		a.dto.ThumbBase64(),
+		a.dto.Category())
 	return []byte(json)
 }
 
@@ -256,5 +261,6 @@ func (a *pageDaoReader) Template() string {
 	"content":"%s",
 	"dsq_thread_id":"%s"
 	"thumbBase64":"%s"
+	"category":"%s"
 }`
 }
