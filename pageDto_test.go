@@ -17,7 +17,8 @@ func TestNewFilledDto(t *testing.T) {
 		"pathValue",
 		"fspathValue",
 		"htmlfilenameValue",
-		"thumbBase64Value")
+		"thumbBase64Value",
+		"categoryValue")
 
 	if dto.Id() != 42 {
 		t.Error("Expected 42, but got ", dto.Id())
@@ -55,8 +56,8 @@ func TestNewFilledDto(t *testing.T) {
 	if dto.Content() != "contentValue" {
 		t.Error("Expected contentValue, but got ", dto.Content())
 	}
-	if dto.Category() != "contentValue" {
-		t.Error("Expected contentValue, but got ", dto.Category())
+	if dto.Category() != "categoryValue" {
+		t.Error("Expected categoryValue, but got ", dto.Category())
 	}
 	if dto.ThumbBase64() != "thumbBase64Value" {
 		t.Error("Expected thumbBase64Value, but got ", dto.ThumbBase64())
@@ -66,5 +67,8 @@ func TestNewFilledDto(t *testing.T) {
 	}
 	if dto.PathFromDocRoot() != "pathValue" {
 		t.Error("Expected pathValue, but got ", dto.PathFromDocRoot())
+	}
+	if dto.Category() != "categoryValue" {
+		t.Error("Expected categoryValue, but got ", dto.Category())
 	}
 }
