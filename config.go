@@ -36,6 +36,8 @@ type Src struct {
 
 type JsonConfig struct {
 	Domain       string `json:"domain"`
+	HomeText     string `json:"homeText"`
+	HomeHeadline string `json:"homeHeadline"`
 	AddPostDir   string `json:"addPostDir"`
 	WritePostDir string `json:"writePostDir"`
 	AddPageDir   string `json:"addPageDir"`

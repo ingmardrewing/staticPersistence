@@ -11,11 +11,8 @@ import (
 
 func newPageDaoReader(data []byte, path, filename string) *pageDaoReader {
 	d := new(pageDaoReader)
-	dto := NewFilledDto(0,
-		"", "", "", "", "",
-		"", "", "", "", "",
-		path, filename, "", "", "")
-
+	dto := NewFilledDto(0, "", "", "", "", "", "",
+		"", "", "", "", path, filename, "", "", "", "")
 	d.Dto(dto)
 	d.Data(data)
 	return d
@@ -181,6 +178,7 @@ func (a *pageDaoReader) ExtractFromJson() {
 	title := a.ReadFirstString("title")
 	titlePlain := a.ReadFirstString("titlePlain")
 	thumbUrl := a.ReadFirstString("thumbUrl")
+	microThumbUrl := a.ReadFirstString("microThumbUrl")
 	imageUrl := a.ReadFirstString("imageUrl")
 	description := a.ReadFirstString("description")
 	disqusId := a.ReadFirstString("disqusId")
@@ -214,7 +212,8 @@ func (a *pageDaoReader) ExtractFromJson() {
 		fsPath,
 		htmlFilename,
 		thumbBase64,
-		category)
+		category,
+		microThumbUrl)
 }
 
 func (a *pageDaoReader) Data(data []byte) {
