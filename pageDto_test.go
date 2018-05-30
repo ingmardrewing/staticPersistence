@@ -18,7 +18,8 @@ func TestNewFilledDto(t *testing.T) {
 		"fspathValue",
 		"htmlfilenameValue",
 		"thumbBase64Value",
-		"categoryValue")
+		"categoryValue",
+		"microThumbValue")
 
 	if dto.Id() != 42 {
 		t.Error("Expected 42, but got ", dto.Id())
@@ -70,5 +71,8 @@ func TestNewFilledDto(t *testing.T) {
 	}
 	if dto.Category() != "categoryValue" {
 		t.Error("Expected categoryValue, but got ", dto.Category())
+	}
+	if dto.MicroThumbUrl() != "microThumbValue" {
+		t.Error("Expected microThumbValue, but got ", dto.MicroThumbUrl())
 	}
 }

@@ -77,7 +77,8 @@ func TestFillJson(t *testing.T) {
 		"fspathValue",
 		"htmlfilenameValue",
 		"thumbBase64Value",
-		"categoryValue")
+		"categoryValue",
+		"microThumbUrl")
 
 	d := new(pageDaoReader)
 	d.Dto(dto)
@@ -136,5 +137,5 @@ func newVersion1Dto() staticIntf.PageDto {
 		"titleValue", "title_plainValue", "thumbImageValue",
 		"postImageValue", "excerptValue", "dsq_thread_idValue",
 		"dateValue", "contentValue", "urlValue", "",
-		"", "", "filenameValue", "", "")
+		"", "", "filenameValue", "", "", "")
 }
