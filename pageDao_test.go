@@ -99,7 +99,8 @@ func TestFillJson(t *testing.T) {
 	"content":"%s",
 	"dsq_thread_id":"%s",
 	"thumbBase64":"%s",
-	"category":"%s"
+	"category":"%s",
+	"microThumbUrl":"%s"
 }`,
 		dto.ThumbUrl(),
 		dto.ImageUrl(),
@@ -113,7 +114,8 @@ func TestFillJson(t *testing.T) {
 		dto.Content(),
 		dto.DisqusId(),
 		dto.ThumbBase64(),
-		dto.Category())
+		dto.Category(),
+		dto.MicroThumbUrl())
 
 	if actual != expected {
 		t.Error("Expected", actual, "to be", expected)
