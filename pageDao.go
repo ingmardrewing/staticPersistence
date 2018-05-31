@@ -241,7 +241,8 @@ func (a *pageDaoReader) FillJson() []byte {
 		a.dto.Content(),
 		a.dto.DisqusId(),
 		a.dto.ThumbBase64(),
-		a.dto.Category())
+		a.dto.Category(),
+		a.dto.MicroThumbUrl())
 	return []byte(json)
 }
 
@@ -260,6 +261,7 @@ func (a *pageDaoReader) Template() string {
 	"content":"%s",
 	"dsq_thread_id":"%s",
 	"thumbBase64":"%s",
-	"category":"%s"
+	"category":"%s",
+	"microThumbUrl":"%s"
 }`
 }
