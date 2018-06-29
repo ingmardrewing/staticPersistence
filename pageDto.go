@@ -1,6 +1,10 @@
 package staticPersistence
 
-import "github.com/ingmardrewing/staticIntf"
+import (
+	"fmt"
+
+	"github.com/ingmardrewing/staticIntf"
+)
 
 func NewFilledDto(id int,
 	title, titlePlain, thumbUrl,
@@ -40,7 +44,10 @@ func (p pageDTO) TitlePlain() string { return p.titlePlain }
 
 func (p pageDTO) ThumbUrl() string { return p.thumbUrl }
 
-func (p pageDTO) MicroThumbUrl() string { return p.microThumbUrl }
+func (p pageDTO) MicroThumbUrl() string {
+	fmt.Println(p.microThumbUrl)
+	return p.microThumbUrl
+}
 
 func (p pageDTO) ImageUrl() string { return p.imageUrl }
 
