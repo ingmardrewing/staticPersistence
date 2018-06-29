@@ -94,6 +94,7 @@ func newKeyCollection() *keyCollection {
 	kc.addKeyPath("thumbBase64", &keyPath{[]string{"thumbBase64"}})
 
 	kc.addKeyPath("version", &keyPath{[]string{"version"}})
+	kc.addKeyPath("microThumbUrl", &keyPath{[]string{"microThumbUrl"}})
 
 	return kc
 }
