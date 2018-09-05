@@ -40,7 +40,9 @@ func (p pageDTO) TitlePlain() string { return p.titlePlain }
 
 func (p pageDTO) ThumbUrl() string { return p.thumbUrl }
 
-func (p pageDTO) MicroThumbUrl() string { return p.microThumbUrl }
+func (p pageDTO) MicroThumbUrl() string {
+	return p.microThumbUrl
+}
 
 func (p pageDTO) ImageUrl() string { return p.imageUrl }
 
