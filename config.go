@@ -29,9 +29,10 @@ type Link struct {
 }
 
 type Src struct {
-	Dir    string `json:"dir"`
-	Type   string `json:"type"`
-	SubDir string `json:"subDir"`
+	Dir      string `json:"dir"`
+	Type     string `json:"type"`
+	Headline string `json:"headline"`
+	SubDir   string `json:"subDir"`
 }
 
 type JsonConfig struct {
