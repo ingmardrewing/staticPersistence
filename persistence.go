@@ -31,9 +31,7 @@ func WritePagesToDir(dtos []staticIntf.PageDto, dirname string) {
 	jsonName := "doc%05d.json"
 	counter := 0
 	for _, dto := range dtos {
-		newDto := fixcontent(dto)
-		fmt.Println(newDto.Content())
-		WritePageDtoToJson(newDto, dirname, fmt.Sprintf(jsonName, counter))
+		WritePageDtoToJson(dto, dirname, fmt.Sprintf(jsonName, counter))
 		counter = counter + 1
 	}
 }
@@ -73,6 +71,9 @@ func ReadJsonFilesFromDir(path string) []fs.FileContainer {
 }
 
 func WritePageDtoToJson(dto staticIntf.PageDto, path, filename string) {
+	newDto := fixJsonValues(dto)
+	fmt.Println(newDto.Content())
+
 	dao := newPageDaoReader(nil, path, filename)
 	dao.Dto(dto)
 
@@ -81,4 +82,46 @@ func WritePageDtoToJson(dto staticIntf.PageDto, path, filename string) {
 	fc.SetPath(path)
 	fc.SetFilename(filename)
 	fc.Write()
+}
+
+func fixJsonValues(dto staticIntf.PageDto) staticIntf.PageDto {
+	return NewFilledDto(
+		dto.Id(),
+		cleanStringValue(dto.Title()),
+		cleanStringValue(dto.TitlePlain()),
+		cleanStringValue(dto.ThumbUrl()),
+		cleanStringValue(dto.ImageUrl()),
+		cleanStringValue(dto.Description()),
+		cleanStringValue(dto.DisqusId()),
+		cleanStringValue(dto.CreateDate()),
+		cleanStringValue(dto.Content()),
+		cleanStringValue(dto.Url()),
+		cleanStringValue(dto.Domain()),
+		cleanStringValue(dto.PathFromDocRoot()),
+		cleanStringValue(dto.FsPath()),
+		cleanStringValue(dto.HtmlFilename()),
+		cleanStringValue(dto.ThumbBase64()),
+		cleanStringValue(dto.Category()),
+		cleanStringValue(dto.MicroThumbUrl()))
+}
+
+func cleanStringValue(dirty string) string {
+	withoutLineBreaks := removeLineBreaks(dirty)
+	return removeQuotes(withoutLineBreaks)
+}
+
+func removeLineBreaks(val string) string {
+	lineBreakRx, err := rx.NewRx("\n|\r|\n\r")
+	if err != nil {
+		log.Error(err)
+	}
+	return lineBreakRx.SubstituteAllOccurences(val, "")
+}
+
+func removeQuotes(val string) string {
+	unescapedQuoteRx, err := rx.NewRx(`([^\\])"`)
+	if err != nil {
+		log.Error(err)
+	}
+	return unescapedQuoteRx.SubstituteAllOccurences(val, `${1}\"`)
 }
