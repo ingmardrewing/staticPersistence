@@ -14,6 +14,18 @@ func currentDir() string {
 	return path.Dir(filename)
 }
 
+func TestCleanStringValue(t *testing.T) {
+	dirtyString := `What
+ ever you "say" or don't \"say\"`
+
+	actual := cleanStringValue(dirtyString)
+	expected := `What ever you \"say\" or don't \"say\"`
+
+	if actual != expected {
+		t.Error("Expected", expected, "dtos, but got", actual)
+	}
+}
+
 func TestReadPagesFromDir(t *testing.T) {
 	p := path.Join(currentDir(), "testResources/posts/")
 	dtos := ReadPagesFromDir(p)
