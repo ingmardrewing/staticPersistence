@@ -53,7 +53,7 @@ func fixcontent(dto staticIntf.PageDto) staticIntf.PageDto {
 
 func getDto(fc fs.FileContainer) staticIntf.PageDto {
 	dao := newPageDaoReader(fc.GetData(), fc.GetPath(), fc.GetFilename())
-	fmt.Println("reading: " + fc.GetPath() + "/" + fc.GetFilename())
+	log.Debug("reading: " + fc.GetPath() + "/" + fc.GetFilename())
 	dao.ExtractFromJson()
 	return dao.Dto()
 }
