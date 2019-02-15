@@ -25,6 +25,7 @@ func readAndGetDto(path, file string) staticIntf.PageDto {
 	return a.Dto()
 }
 
+/*
 func TestNewPageDaoReader(t *testing.T) {
 	p := path.Join(currentDir(), "testResources", "posts")
 	f := "version0.json"
@@ -36,30 +37,7 @@ func TestNewPageDaoReader(t *testing.T) {
 		t.Error("Expected", expected, "but got", dto.Title())
 	}
 }
-
-func TestGenerateCreateDateFromPathFromDocRoot(t *testing.T) {
-	d := new(pageDaoReader)
-
-	p := "/2018/03/10/wtf/"
-	actual := d.generateCreateDateFromPathFromDocRoot("", p)
-	expected := "Sat, 10 Mar 2018 20:00:00 +0100"
-
-	if actual != expected {
-		t.Error("Expected", expected, "but got", actual)
-	}
-}
-
-func TestExtractFsPath(t *testing.T) {
-	d := new(pageDaoReader)
-
-	afspath, adomain, _ := d.extractFsPathDomainAndPathFromDocRootFromUrl(1, "", "domain", "/path/from/doc/root", "https://drewing.de/blog/2018/03/30/test")
-	edomain := "drewing.de"
-	epath := "2018/03/30/test"
-
-	if adomain != edomain || afspath != epath {
-		t.Error("Expected", edomain, "and", epath, ", but instead got", afspath, "and", adomain)
-	}
-}
+*/
 
 func TestFillJson(t *testing.T) {
 	dto := NewFilledDto(42,

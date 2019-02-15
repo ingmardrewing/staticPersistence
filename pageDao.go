@@ -152,3 +152,26 @@ type docJson struct {
 	Category      string `json:"category"`
 	MicroThumbUrl string `json:"microThumbUrl"`
 }
+
+type imageUrls struct {
+	w190          string `json:"w_190"`
+	w390          string `json:"w_390"`
+	w800          string `json:"w_800"`
+	maxResolution string `json:"max_resolution"`
+}
+
+type docJson2 struct {
+	Version         int         `json:"version"`
+	Id              int         `json:"id"`
+	Filename        string      `json:"filename"`
+	PathFromDocRoot string      `json:"path_from_doc_root"`
+	Category        string      `json:"category"`
+	Tags            []string    `json:"tags"`
+	CreateDate      string      `json:"create_date"`
+	Title           string      `json:"title"`
+	Title_plain     string      `json:"title_plain"`
+	Excerpt         string      `json:"excerpt"`
+	Content         string      `json:"content"`
+	ThumbBase64     string      `json:"thumb_base64"`
+	ImagesUrls      []imageUrls `json:"images_urls"`
+}

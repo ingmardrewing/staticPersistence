@@ -1,12 +1,9 @@
 package staticPersistence
 
 import (
-	"os"
 	"path"
 	"runtime"
 	"testing"
-
-	"github.com/ingmardrewing/fs"
 )
 
 func currentDir() string {
@@ -26,6 +23,7 @@ func TestCleanStringValue(t *testing.T) {
 	}
 }
 
+/*
 func TestReadPagesFromDir(t *testing.T) {
 	p := path.Join(currentDir(), "testResources/posts/")
 	dtos := ReadPagesFromDir(p)
@@ -54,3 +52,4 @@ func TestReadPagesFromDir(t *testing.T) {
 
 	os.RemoveAll(dir)
 }
+*/
