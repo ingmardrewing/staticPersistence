@@ -1,10 +1,11 @@
 package staticPersistence
 
 import (
+	"encoding/json"
 	"fmt"
-	"strconv"
 	"strings"
-	"time"
+
+	log "github.com/sirupsen/logrus"
 
 	"github.com/ingmardrewing/staticIntf"
 )
@@ -18,184 +19,54 @@ func newPageDaoReader(data []byte, path, filename string) *pageDaoReader {
 	return d
 }
 
-type keyPath struct {
-	nodes []string
-}
-
-type keyCollection struct {
-	pathMap map[string][]*keyPath
-}
-
-func (k *keyCollection) addKeyPath(key string, path *keyPath) {
-	if val, ok := k.pathMap[key]; ok {
-		val = append(val, path)
-		k.pathMap[key] = val
-	} else {
-		k.pathMap[key] = []*keyPath{path}
-	}
-}
-
-func (k *keyCollection) getKeyCollection(key string) []*keyPath {
-	return k.pathMap[key]
-}
-
-func newKeyCollection() *keyCollection {
-	kc := new(keyCollection)
-	kc.pathMap = make(map[string][]*keyPath)
-
-	kc.addKeyPath("url", &keyPath{[]string{"post", "url"}})
-	kc.addKeyPath("url", &keyPath{[]string{"url"}})
-
-	kc.addKeyPath("domain", &keyPath{[]string{"domain"}})
-
-	kc.addKeyPath("id", &keyPath{[]string{"post", "post_id"}})
-	kc.addKeyPath("id", &keyPath{[]string{"page", "post_id"}})
-	kc.addKeyPath("id", &keyPath{[]string{"id"}})
-
-	kc.addKeyPath("title", &keyPath{[]string{"title"}})
-	kc.addKeyPath("title", &keyPath{[]string{"post", "title"}})
-
-	kc.addKeyPath("titlePlain", &keyPath{[]string{"title_plain"}})
-	kc.addKeyPath("titlePlain", &keyPath{[]string{"title"}})
-
-	kc.addKeyPath("thumbUrl", &keyPath{[]string{"thumbUrl"}})
-	kc.addKeyPath("thumbUrl", &keyPath{[]string{"thumbImg"}})
-	kc.addKeyPath("thumbUrl", &keyPath{[]string{"imgUrl"}})
-
-	kc.addKeyPath("imageUrl", &keyPath{[]string{"imageUrl"}})
-	kc.addKeyPath("imageUrl", &keyPath{[]string{"postImg"}})
-	kc.addKeyPath("imageUrl", &keyPath{[]string{"imgUrl"}})
-
-	kc.addKeyPath("description", &keyPath{[]string{"page", "excerpt"}})
-	kc.addKeyPath("description", &keyPath{[]string{"description"}})
-	kc.addKeyPath("description", &keyPath{[]string{"excerpt"}})
-
-	kc.addKeyPath("disqusId", &keyPath{[]string{"page", "custom_fields", "dsq_thread_id", "[0]"}})
-	kc.addKeyPath("disqusId", &keyPath{[]string{"dsq_thread_id"}})
-	kc.addKeyPath("disqusId", &keyPath{[]string{"disqusId"}})
-
-	kc.addKeyPath("createDate", &keyPath{[]string{"post", "date"}})
-	kc.addKeyPath("createDate", &keyPath{[]string{"page", "date"}})
-	kc.addKeyPath("createDate", &keyPath{[]string{"createDate"}})
-	kc.addKeyPath("createDate", &keyPath{[]string{"date"}})
-
-	kc.addKeyPath("category", &keyPath{[]string{"category"}})
-
-	kc.addKeyPath("content", &keyPath{[]string{"content"}})
-	kc.addKeyPath("content", &keyPath{[]string{"post", "content"}})
-	kc.addKeyPath("content", &keyPath{[]string{"act"}})
-
-	kc.addKeyPath("pathFromDocRoot", &keyPath{[]string{"path"}})
-
-	kc.addKeyPath("fsPath", &keyPath{[]string{"fsPath"}})
-
-	kc.addKeyPath("htmlFilename", &keyPath{[]string{"filename"}})
-
-	kc.addKeyPath("thumbBase64", &keyPath{[]string{"thumbBase64"}})
-
-	kc.addKeyPath("version", &keyPath{[]string{"version"}})
-	kc.addKeyPath("microThumbUrl", &keyPath{[]string{"microThumbUrl"}})
-
-	return kc
-}
-
 type pageDaoReader struct {
 	data []byte
 	Json
 	dto staticIntf.PageDto
 }
 
-func (a *pageDaoReader) ReadFirstString(key string) string {
-	kc := newKeyCollection()
-	keys := kc.getKeyCollection(key)
-	for _, k := range keys {
-		txt := a.ReadString(a.data, k.nodes...)
-		if len(txt) > 0 {
-			return txt
-		}
-	}
-	return ""
-}
-
-func (a *pageDaoReader) ReadFirstInt(key string) int {
-	kc := newKeyCollection()
-	keys := kc.getKeyCollection(key)
-	for _, k := range keys {
-		number := a.ReadInt(a.data, k.nodes...)
-		if number > 0 {
-			return number
-		}
-	}
-	return 0
-}
-
-func (a *pageDaoReader) checkHtmlFilename(htmlFilename string) string {
-	if len(htmlFilename) == 0 {
-		return "index.html"
-	}
-	return htmlFilename
-}
-
-func (a *pageDaoReader) generateDomainAndPathFromDocRoot(pathFromDocRoot, domain, url string) (string, string) {
-	if len(pathFromDocRoot) == 0 && len(domain) == 0 && len(url) > 0 {
+func (a *pageDaoReader) extractUrlParts(url string) (string, string) {
+	if len(url) > 0 {
 		parts := strings.Split(url, "/")
 		if len(parts) > 3 {
+			/*
+				loc, _ := time.LoadLocation("Europe/Berlin")
+				y, _ := strconv.Atoi(parts[1])
+				m, _ := strconv.Atoi(parts[2])
+				d, _ := strconv.Atoi(parts[3])
+				dt := time.Date(y, time.Month(m), d, 20, 0, 0, 0, loc)
+				dt.Format(time.RFC1123Z)
+			*/
 			return strings.Join(parts[4:], "/"), parts[2]
+		} else {
+			log.Debug(parts)
 		}
 	}
-	return pathFromDocRoot, domain
-}
-
-func (a *pageDaoReader) generateCreateDateFromPathFromDocRoot(createDate, pathFromDocRoot string) string {
-	if len(createDate) == 0 && len(pathFromDocRoot) > 0 {
-		parts := strings.Split(pathFromDocRoot, "/")
-		if len(parts) > 3 {
-			loc, _ := time.LoadLocation("Europe/Berlin")
-			y, _ := strconv.Atoi(parts[1])
-			m, _ := strconv.Atoi(parts[2])
-			d, _ := strconv.Atoi(parts[3])
-			dt := time.Date(y, time.Month(m), d, 20, 0, 0, 0, loc)
-			return dt.Format(time.RFC1123Z)
-		}
-	}
-	return createDate
-}
-
-func (a *pageDaoReader) extractFsPathDomainAndPathFromDocRootFromUrl(version int, fsPath, domain, pathFromDocRoot, url string) (string, string, string) {
-	if version == 1 && len(fsPath) == 0 && len(url) > 0 {
-		parts := strings.Split(url, "/")
-		if len(parts) > 3 {
-			fsPath = strings.Join(parts[4:], "/")
-			domain = parts[2]
-			return fsPath, domain, fsPath
-		}
-	}
-	return fsPath, domain, pathFromDocRoot
+	log.Debug("URL missing while reading from json")
+	return "", ""
 }
 
 func (a *pageDaoReader) ExtractFromJson() {
-	id := a.ReadFirstInt("id")
-	version := a.ReadFirstInt("version")
-	title := a.ReadFirstString("title")
-	titlePlain := a.ReadFirstString("titlePlain")
-	thumbUrl := a.ReadFirstString("thumbUrl")
-	microThumbUrl := a.ReadFirstString("microThumbUrl")
-	imageUrl := a.ReadFirstString("imageUrl")
-	description := a.ReadFirstString("description")
-	disqusId := a.ReadFirstString("disqusId")
-	createDate := a.ReadFirstString("createDate")
-	content := a.ReadFirstString("content")
-	pathFromDocRoot := a.ReadFirstString("pathFromDocRoot")
-	fsPath := a.ReadFirstString("fsPath")
-	htmlFilename := a.checkHtmlFilename(a.ReadFirstString("htmlFilename"))
-	thumbBase64 := a.ReadFirstString("thumbBase64")
-	url := a.ReadFirstString("url")
-	domain := a.ReadFirstString("domain")
-	category := a.ReadFirstString("category")
+	var doc docJson
+	json.Unmarshal(a.data, &doc)
 
-	pathFromDocRoot, domain = a.generateDomainAndPathFromDocRoot(pathFromDocRoot, domain, url)
-	createDate = a.generateCreateDateFromPathFromDocRoot(createDate, pathFromDocRoot)
-	fsPath, domain, pathFromDocRoot = a.extractFsPathDomainAndPathFromDocRootFromUrl(version, fsPath, domain, pathFromDocRoot, url)
+	thumbUrl := doc.ThumbImg
+	imageUrl := doc.PostImg
+	htmlFilename := doc.Filename
+	id := doc.Id
+	createDate := doc.Date
+	url := doc.Url
+	title := doc.Title
+	titlePlain := doc.Title_plain
+	description := doc.Excerpt
+	content := doc.Content
+	disqusId := doc.Dsq_thread_id
+	thumbBase64 := doc.ThumbBase64
+	category := doc.Category
+	microThumbUrl := doc.MicroThumbUrl
+
+	log.Debug(url)
+	pathFromDocRoot, domain := a.extractUrlParts(url)
 
 	a.dto = NewFilledDto(
 		id,
@@ -210,11 +81,16 @@ func (a *pageDaoReader) ExtractFromJson() {
 		url,
 		domain,
 		pathFromDocRoot,
-		fsPath,
+		pathFromDocRoot,
 		htmlFilename,
 		thumbBase64,
 		category,
 		microThumbUrl)
+
+	if len(pathFromDocRoot) == 0 && len(htmlFilename) == 0 {
+		log.Fatalln(doc)
+	}
+
 }
 
 func (a *pageDaoReader) Data(data []byte) {
@@ -265,4 +141,22 @@ func (a *pageDaoReader) Template() string {
 	"category":"%s",
 	"microThumbUrl":"%s"
 }`
+}
+
+type docJson struct {
+	Version       int    `json:"version"`
+	ThumbImg      string `json:"thumbImg"`
+	PostImg       string `json:"postImg"`
+	Filename      string `json:"filename"`
+	Id            int    `json:"id"`
+	Date          string `json:"date"`
+	Url           string `json:"url"`
+	Title         string `json:"title"`
+	Title_plain   string `json:"title_plain"`
+	Excerpt       string `json:"excerpt"`
+	Content       string `json:"content"`
+	Dsq_thread_id string `json:"dsq_thread_id"`
+	ThumbBase64   string `json:"thumbBase64"`
+	Category      string `json:"category"`
+	MicroThumbUrl string `json:"microThumbUrl"`
 }
