@@ -29,15 +29,7 @@ func (a *pageDaoReader) extractUrlParts(url string) (string, string) {
 	if len(url) > 0 {
 		parts := strings.Split(url, "/")
 		if len(parts) > 3 {
-			/*
-				loc, _ := time.LoadLocation("Europe/Berlin")
-				y, _ := strconv.Atoi(parts[1])
-				m, _ := strconv.Atoi(parts[2])
-				d, _ := strconv.Atoi(parts[3])
-				dt := time.Date(y, time.Month(m), d, 20, 0, 0, 0, loc)
-				dt.Format(time.RFC1123Z)
-			*/
-			return strings.Join(parts[4:], "/"), parts[2]
+			return strings.Join(parts[3:], "/"), parts[2]
 		} else {
 			log.Debug(parts)
 		}
