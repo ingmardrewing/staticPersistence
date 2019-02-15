@@ -97,22 +97,44 @@ func (a *pageDaoReader) Dto(dto ...staticIntf.PageDto) staticIntf.PageDto {
 }
 
 func (a *pageDaoReader) FillJson() []byte {
-	json := fmt.Sprintf(a.Template(),
+	img := fmt.Sprintf(a.Template2ImageUrls(),
+		a.dto.Title(),
+		a.dto.MicroThumbUrl(),
 		a.dto.ThumbUrl(),
 		a.dto.ImageUrl(),
+		"")
+
+	json2 := fmt.Sprintf(a.Template2(),
 		a.dto.HtmlFilename(),
-		a.dto.Id(),
+		a.dto.PathFromDocRoot(),
+		a.dto.Category(),
+		"", //a.dto.Tags(),
 		a.dto.CreateDate(),
-		a.dto.Url(),
 		a.dto.Title(),
 		a.dto.TitlePlain(),
 		a.dto.Description(),
 		a.dto.Content(),
-		a.dto.DisqusId(),
 		a.dto.ThumbBase64(),
-		a.dto.Category(),
-		a.dto.MicroThumbUrl())
-	return []byte(json)
+		img)
+
+	/*
+		json := fmt.Sprintf(a.Template(),
+			a.dto.ThumbUrl(),
+			a.dto.ImageUrl(),
+			a.dto.HtmlFilename(),
+			a.dto.Id(),
+			a.dto.CreateDate(),
+			a.dto.Url(),
+			a.dto.Title(),
+			a.dto.TitlePlain(),
+			a.dto.Description(),
+			a.dto.Content(),
+			a.dto.DisqusId(),
+			a.dto.ThumbBase64(),
+			a.dto.Category(),
+			a.dto.MicroThumbUrl())
+	*/
+	return []byte(json2)
 }
 
 func (a *pageDaoReader) Template() string {
@@ -135,6 +157,27 @@ func (a *pageDaoReader) Template() string {
 }`
 }
 
+func (a *pageDaoReader) Template2ImageUrls() string {
+	return `{"title":"%s","w_190":"%s","w_390":"%s","w_800":"%s","max_resolution":"%s"}`
+}
+
+func (a *pageDaoReader) Template2() string {
+	return `{
+	"version":2,
+	"filename":"%s",
+	"path_from_doc_root":"%s",
+	"category":"%s",
+	"tags":"%s",
+	"create_date":"%s",
+	"title":"%s",
+	"title_plain":"%s",
+	"excerpt":"%s",
+	"content":"%s",
+	"thumb_base64":"%s",
+	"images_urls":[%s]
+}`
+}
+
 type docJson struct {
 	Version       int    `json:"version"`
 	ThumbImg      string `json:"thumbImg"`
@@ -154,15 +197,15 @@ type docJson struct {
 }
 
 type imageUrls struct {
-	w190          string `json:"w_190"`
-	w390          string `json:"w_390"`
-	w800          string `json:"w_800"`
-	maxResolution string `json:"max_resolution"`
+	Title         string `json:"title"`
+	W190          string `json:"w_190"`
+	W390          string `json:"w_390"`
+	W800          string `json:"w_800"`
+	MaxResolution string `json:"max_resolution"`
 }
 
 type docJson2 struct {
 	Version         int         `json:"version"`
-	Id              int         `json:"id"`
 	Filename        string      `json:"filename"`
 	PathFromDocRoot string      `json:"path_from_doc_root"`
 	Category        string      `json:"category"`
@@ -170,7 +213,7 @@ type docJson2 struct {
 	CreateDate      string      `json:"create_date"`
 	Title           string      `json:"title"`
 	Title_plain     string      `json:"title_plain"`
-	Excerpt         string      `json:"excerpt"`
+	Description     string      `json:"desription"`
 	Content         string      `json:"content"`
 	ThumbBase64     string      `json:"thumb_base64"`
 	ImagesUrls      []imageUrls `json:"images_urls"`

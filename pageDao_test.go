@@ -1,7 +1,6 @@
 package staticPersistence
 
 import (
-	"fmt"
 	"path"
 	"reflect"
 	"testing"
@@ -63,37 +62,20 @@ func TestFillJson(t *testing.T) {
 
 	actual := string(d.FillJson())
 
-	expected := fmt.Sprintf(`{
-	"version":1,
-	"thumbImg":"%s",
-	"postImg":"%s",
-	"filename":"%s",
-	"id":%d,
-	"date":"%s",
-	"url":"%s",
-	"title":"%s",
-	"title_plain":"%s",
-	"excerpt":"%s",
-	"content":"%s",
-	"dsq_thread_id":"%s",
-	"thumbBase64":"%s",
-	"category":"%s",
-	"microThumbUrl":"%s"
-}`,
-		dto.ThumbUrl(),
-		dto.ImageUrl(),
-		dto.HtmlFilename(),
-		dto.Id(),
-		dto.CreateDate(),
-		dto.Url(),
-		dto.Title(),
-		dto.TitlePlain(),
-		dto.Description(),
-		dto.Content(),
-		dto.DisqusId(),
-		dto.ThumbBase64(),
-		dto.Category(),
-		dto.MicroThumbUrl())
+	expected := `{
+	"version":2,
+	"filename":"htmlfilenameValue",
+	"path_from_doc_root":"pathValue",
+	"category":"categoryValue",
+	"tags":"",
+	"create_date":"createDateValue",
+	"title":"titleValue",
+	"title_plain":"titlePlainValue",
+	"excerpt":"descriptionValue",
+	"content":"contentValue",
+	"thumb_base64":"thumbBase64Value",
+	"images_urls":[{"title":"titleValue","w_190":"microThumbUrl","w_390":"thumbUrlValue","w_800":"imageUrlValue","max_resolution":""}]
+}`
 
 	if actual != expected {
 		t.Error("Expected", actual, "to be", expected)
