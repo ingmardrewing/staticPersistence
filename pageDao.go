@@ -27,7 +27,7 @@ type pageDaoReader struct {
 }
 
 func (a *pageDaoReader) ExtractFromJson() {
-	var doc docJson2
+	var doc docJson
 	json.Unmarshal(a.data, &doc)
 
 	thumbUrl := ""
@@ -80,7 +80,7 @@ func (a *pageDaoReader) Dto(dto ...staticIntf.PageDto) staticIntf.PageDto {
 }
 
 func (a *pageDaoReader) FillJson() []byte {
-	img := fmt.Sprintf(a.Template2ImageUrls(),
+	img := fmt.Sprintf(a.TemplateImageUrls(),
 		a.dto.Title(),
 		a.dto.MicroThumbUrl(),
 		a.dto.ThumbUrl(),
@@ -91,7 +91,7 @@ func (a *pageDaoReader) FillJson() []byte {
 	if len(a.dto.Tags()) > 0 {
 		tags = `["` + strings.Join(a.dto.Tags(), `","`) + `"]`
 	}
-	json2 := fmt.Sprintf(a.Template2(),
+	json2 := fmt.Sprintf(a.Template(),
 		a.dto.HtmlFilename(),
 		a.dto.PathFromDocRoot(),
 		a.dto.Category(),
@@ -104,51 +104,14 @@ func (a *pageDaoReader) FillJson() []byte {
 		a.dto.ThumbBase64(),
 		img)
 
-	/*
-		json := fmt.Sprintf(a.Template(),
-			a.dto.ThumbUrl(),
-			a.dto.ImageUrl(),
-			a.dto.HtmlFilename(),
-			a.dto.Id(),
-			a.dto.CreateDate(),
-			a.dto.Url(),
-			a.dto.Title(),
-			a.dto.TitlePlain(),
-			a.dto.Description(),
-			a.dto.Content(),
-			a.dto.DisqusId(),
-			a.dto.ThumbBase64(),
-			a.dto.Category(),
-			a.dto.MicroThumbUrl())
-	*/
 	return []byte(json2)
 }
 
-func (a *pageDaoReader) Template() string {
-	return `{
-	"version":1,
-	"thumbImg":"%s",
-	"postImg":"%s",
-	"filename":"%s",
-	"id":%d,
-	"date":"%s",
-	"url":"%s",
-	"title":"%s",
-	"title_plain":"%s",
-	"excerpt":"%s",
-	"content":"%s",
-	"dsq_thread_id":"%s",
-	"thumbBase64":"%s",
-	"category":"%s",
-	"microThumbUrl":"%s"
-}`
-}
-
-func (a *pageDaoReader) Template2ImageUrls() string {
+func (a *pageDaoReader) TemplateImageUrls() string {
 	return `{"title":"%s","w_190":"%s","w_390":"%s","w_800":"%s","max_resolution":"%s"}`
 }
 
-func (a *pageDaoReader) Template2() string {
+func (a *pageDaoReader) Template() string {
 	return `{
 	"version":2,
 	"filename":"%s",
@@ -165,24 +128,6 @@ func (a *pageDaoReader) Template2() string {
 }`
 }
 
-type docJson struct {
-	Version       int    `json:"version"`
-	ThumbImg      string `json:"thumbImg"`
-	PostImg       string `json:"postImg"`
-	Filename      string `json:"filename"`
-	Id            int    `json:"id"`
-	Date          string `json:"date"`
-	Url           string `json:"url"`
-	Title         string `json:"title"`
-	Title_plain   string `json:"title_plain"`
-	Excerpt       string `json:"excerpt"`
-	Content       string `json:"content"`
-	Dsq_thread_id string `json:"dsq_thread_id"`
-	ThumbBase64   string `json:"thumbBase64"`
-	Category      string `json:"category"`
-	MicroThumbUrl string `json:"microThumbUrl"`
-}
-
 type imageUrls struct {
 	Title         string `json:"title"`
 	W190          string `json:"w_190"`
@@ -191,7 +136,7 @@ type imageUrls struct {
 	MaxResolution string `json:"max_resolution"`
 }
 
-type docJson2 struct {
+type docJson struct {
 	Version         int         `json:"version"`
 	Filename        string      `json:"filename"`
 	PathFromDocRoot string      `json:"path_from_doc_root"`
@@ -200,7 +145,7 @@ type docJson2 struct {
 	CreateDate      string      `json:"create_date"`
 	Title           string      `json:"title"`
 	TitlePlain      string      `json:"title_plain"`
-	Description     string      `json:"desription"`
+	Description     string      `json:"excerpt"`
 	Content         string      `json:"content"`
 	ThumbBase64     string      `json:"thumb_base64"`
 	ImagesUrls      []imageUrls `json:"images_urls"`

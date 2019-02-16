@@ -1,6 +1,10 @@
 package staticPersistence
 
-import "testing"
+import (
+	"testing"
+
+	"github.com/ingmardrewing/staticIntf"
+)
 
 func TestNewFilledDto(t *testing.T) {
 	dto := NewFilledDto(42,
@@ -9,17 +13,16 @@ func TestNewFilledDto(t *testing.T) {
 		"thumbUrlValue",
 		"imageUrlValue",
 		"descriptionValue",
-		"disqusIdValue",
 		"createDateValue",
 		"contentValue",
-		"urlValue",
-		"domainValue",
 		"pathValue",
 		"fspathValue",
 		"htmlfilenameValue",
 		"thumbBase64Value",
 		"categoryValue",
-		"microThumbValue")
+		"microThumbValue",
+		[]string{},
+		[]staticIntf.Image{})
 
 	if dto.Id() != 42 {
 		t.Error("Expected 42, but got ", dto.Id())
@@ -33,9 +36,6 @@ func TestNewFilledDto(t *testing.T) {
 	if dto.Title() != "titleValue" {
 		t.Error("Expected titleValue, but got ", dto.Title())
 	}
-	if dto.Domain() != "domainValue" {
-		t.Error("Expected domainValue, but got ", dto.Domain())
-	}
 	if dto.TitlePlain() != "titlePlainValue" {
 		t.Error("Expected titlePlainValue, but got ", dto.TitlePlain())
 	}
@@ -48,9 +48,6 @@ func TestNewFilledDto(t *testing.T) {
 	if dto.Description() != "descriptionValue" {
 		t.Error("Expected descriptionValue, but got ", dto.Description())
 	}
-	if dto.DisqusId() != "disqusIdValue" {
-		t.Error("Expected disqusIdValue, but got ", dto.DisqusId())
-	}
 	if dto.CreateDate() != "createDateValue" {
 		t.Error("Expected createDateValue, but got ", dto.CreateDate())
 	}
@@ -61,9 +58,6 @@ func TestNewFilledDto(t *testing.T) {
 		t.Error("Expected categoryValue, but got ", dto.Category())
 	}
 	if dto.ThumbBase64() != "thumbBase64Value" {
-		t.Error("Expected thumbBase64Value, but got ", dto.ThumbBase64())
-	}
-	if dto.Url() != "urlValue" {
 		t.Error("Expected thumbBase64Value, but got ", dto.ThumbBase64())
 	}
 	if dto.PathFromDocRoot() != "pathValue" {

@@ -2,7 +2,6 @@ package staticPersistence
 
 import (
 	"path"
-	"reflect"
 	"testing"
 
 	"github.com/ingmardrewing/fs"
@@ -31,17 +30,16 @@ func TestFillJson(t *testing.T) {
 		"thumbUrlValue",
 		"imageUrlValue",
 		"descriptionValue",
-		"disqusIdValue",
 		"createDateValue",
 		"contentValue",
-		"urlValue",
-		"domainValue",
 		"pathValue",
 		"fspathValue",
 		"htmlfilenameValue",
 		"thumbBase64Value",
 		"categoryValue",
-		"microThumbUrl")
+		"microThumbUrl",
+		[]string{},
+		[]staticIntf.Image{})
 
 	d := new(pageDaoReader)
 	d.Dto(dto)
@@ -53,7 +51,7 @@ func TestFillJson(t *testing.T) {
 	"filename":"htmlfilenameValue",
 	"path_from_doc_root":"pathValue",
 	"category":"categoryValue",
-	"tags":"",
+	"tags":[],
 	"create_date":"createDateValue",
 	"title":"titleValue",
 	"title_plain":"titlePlainValue",
@@ -70,20 +68,24 @@ func TestFillJson(t *testing.T) {
 
 func TestReadFile(t *testing.T) {
 	path := path.Join(currentDir(), "testResources", "posts")
-	file := "version1.json"
+	file := "version2.json"
 
 	actual := readAndGetDto(path, file)
-	expected := newVersion1Dto()
+	expected := NewFilledDto(0,
+		"titleValue", "title_plainValue", "thumbImageValue",
+		"postImageValue", "excerptValue", "dateValue", "contentValue",
 
-	if !reflect.DeepEqual(actual, expected) {
+		"", "", "filenameValue", "", "", "", []string{}, []staticIntf.Image{})
+
+	if expected.Title() != actual.Title() ||
+		expected.Description() != actual.Description() ||
+		expected.ThumbUrl() != actual.ThumbUrl() ||
+		expected.ImageUrl() != actual.ImageUrl() ||
+		expected.TitlePlain() != actual.TitlePlain() ||
+		expected.Content() != actual.Content() ||
+		expected.Content() != actual.Content() ||
+		expected.HtmlFilename() != actual.HtmlFilename() ||
+		expected.PathFromDocRoot() != actual.PathFromDocRoot() {
 		t.Error("Expected", actual, "to be", expected)
 	}
-}
-
-func newVersion1Dto() staticIntf.PageDto {
-	return NewFilledDto(1,
-		"titleValue", "title_plainValue", "thumbImageValue",
-		"postImageValue", "excerptValue", "dsq_thread_idValue",
-		"dateValue", "contentValue", "urlValue", "",
-		"", "", "filenameValue", "", "", "")
 }
