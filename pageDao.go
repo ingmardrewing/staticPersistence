@@ -3,6 +3,7 @@ package staticPersistence
 import (
 	"encoding/json"
 	"fmt"
+	"strings"
 
 	log "github.com/sirupsen/logrus"
 
@@ -12,7 +13,8 @@ import (
 func newPageDaoReader(data []byte, path, filename string) *pageDaoReader {
 	d := new(pageDaoReader)
 	dto := NewFilledDto(0, "", "", "", "", "", "",
-		"", "", "", "", path, filename, "", "", "", "")
+		"", "", "", "", path, filename, "", "", "", "",
+		[]string{}, []staticIntf.Image{})
 	d.Dto(dto)
 	d.Data(data)
 	return d
@@ -93,10 +95,19 @@ func (a *pageDaoReader) ExtractFromJson(domain string) {
 	thumbUrl := ""
 	imageUrl := ""
 	microThumbUrl := ""
+	images := []staticIntf.Image{}
 	if len(doc.ImagesUrls) > 0 {
 		microThumbUrl = doc.ImagesUrls[0].W190
 		thumbUrl = doc.ImagesUrls[0].W390
 		imageUrl = doc.ImagesUrls[0].W800
+
+		images = append(images,
+			NewImageDto(
+				doc.ImagesUrls[0].Title,
+				doc.ImagesUrls[0].W190,
+				doc.ImagesUrls[0].W390,
+				doc.ImagesUrls[0].W800,
+				doc.ImagesUrls[0].MaxResolution))
 	}
 	log.Debug(doc.ImagesUrls)
 
@@ -119,7 +130,9 @@ func (a *pageDaoReader) ExtractFromJson(domain string) {
 		doc.Filename,
 		doc.ThumbBase64,
 		doc.Category,
-		microThumbUrl)
+		microThumbUrl,
+		doc.Tags,
+		images)
 }
 
 func (a *pageDaoReader) Data(data []byte) {
@@ -141,11 +154,15 @@ func (a *pageDaoReader) FillJson() []byte {
 		a.dto.ImageUrl(),
 		"")
 
+	tags := "[]"
+	if len(a.dto.Tags()) > 0 {
+		tags = `["` + strings.Join(a.dto.Tags(), `","`) + `"]`
+	}
 	json2 := fmt.Sprintf(a.Template2(),
 		a.dto.HtmlFilename(),
 		a.dto.PathFromDocRoot(),
 		a.dto.Category(),
-		"", //a.dto.Tags(),
+		tags,
 		a.dto.CreateDate(),
 		a.dto.Title(),
 		a.dto.TitlePlain(),
@@ -204,7 +221,7 @@ func (a *pageDaoReader) Template2() string {
 	"filename":"%s",
 	"path_from_doc_root":"%s",
 	"category":"%s",
-	"tags":"%s",
+	"tags":%s,
 	"create_date":"%s",
 	"title":"%s",
 	"title_plain":"%s",

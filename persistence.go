@@ -61,7 +61,7 @@ func fixcontent(dto staticIntf.PageDto) staticIntf.PageDto {
 		dto.ImageUrl(), dto.Description(), dto.DisqusId(),
 		cdate, cnew, dto.Url(), dto.Domain(),
 		"/"+dto.PathFromDocRoot(), dto.FsPath(), dto.HtmlFilename(),
-		dto.ThumbBase64(), dto.Category(), dto.MicroThumbUrl())
+		dto.ThumbBase64(), dto.Category(), dto.MicroThumbUrl(), dto.Tags(), dto.Images())
 }
 
 func getDto(fc fs.FileContainer, domain string) staticIntf.PageDto {
@@ -116,7 +116,9 @@ func fixJsonValues(dto staticIntf.PageDto) staticIntf.PageDto {
 		cleanStringValue(dto.HtmlFilename()),
 		cleanStringValue(dto.ThumbBase64()),
 		cleanStringValue(dto.Category()),
-		cleanStringValue(dto.MicroThumbUrl()))
+		cleanStringValue(dto.MicroThumbUrl()),
+		dto.Tags(),
+		dto.Images())
 }
 
 func cleanStringValue(dirty string) string {
