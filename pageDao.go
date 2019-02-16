@@ -12,7 +12,7 @@ import (
 
 func newPageDaoReader(data []byte, path, filename string) *pageDaoReader {
 	d := new(pageDaoReader)
-	dto := NewFilledDto(0, "", "", "", "", "", "",
+	dto := NewFilledDto(0, "", "", "",
 		"", "", "", "", path, filename, "", "", "", "",
 		[]string{}, []staticIntf.Image{})
 	d.Dto(dto)
@@ -26,69 +26,7 @@ type pageDaoReader struct {
 	dto staticIntf.PageDto
 }
 
-/*
-func (a *pageDaoReader) extractUrlParts(url string) (string, string) {
-	if len(url) > 0 {
-		parts := strings.Split(url, "/")
-		if len(parts) > 3 {
-			return strings.Join(parts[3:], "/"), parts[2]
-		} else {
-			log.Debug(parts)
-		}
-	}
-	log.Debug("URL missing while reading from json")
-	return "", ""
-}
-
-func (a *pageDaoReader) ExtractFromJson(wurst string) {
-	var doc docJson
-	json.Unmarshal(a.data, &doc)
-
-	thumbUrl := doc.ThumbImg
-	imageUrl := doc.PostImg
-	htmlFilename := doc.Filename
-	id := doc.Id
-	createDate := doc.Date
-	url := doc.Url
-	title := doc.Title
-	titlePlain := doc.Title_plain
-	description := doc.Excerpt
-	content := doc.Content
-	disqusId := doc.Dsq_thread_id
-	thumbBase64 := doc.ThumbBase64
-	category := doc.Category
-	microThumbUrl := doc.MicroThumbUrl
-
-	log.Debug(url)
-	pathFromDocRoot, domain := a.extractUrlParts(url)
-
-	a.dto = NewFilledDto(
-		id,
-		title,
-		titlePlain,
-		thumbUrl,
-		imageUrl,
-		description,
-		disqusId,
-		createDate,
-		content,
-		url,
-		domain,
-		pathFromDocRoot,
-		pathFromDocRoot,
-		htmlFilename,
-		thumbBase64,
-		category,
-		microThumbUrl)
-
-	if len(pathFromDocRoot) == 0 && len(htmlFilename) == 0 {
-		log.Fatalln(doc)
-	}
-
-}
-*/
-
-func (a *pageDaoReader) ExtractFromJson(domain string) {
+func (a *pageDaoReader) ExtractFromJson() {
 	var doc docJson2
 	json.Unmarshal(a.data, &doc)
 
@@ -111,8 +49,6 @@ func (a *pageDaoReader) ExtractFromJson(domain string) {
 	}
 	log.Debug(doc.ImagesUrls)
 
-	url := fmt.Sprintf("https://%s%s", domain, doc.PathFromDocRoot)
-
 	a.dto = NewFilledDto(
 		0,
 		doc.Title,
@@ -120,11 +56,8 @@ func (a *pageDaoReader) ExtractFromJson(domain string) {
 		thumbUrl,
 		imageUrl,
 		doc.Description,
-		"",
 		doc.CreateDate,
 		doc.Content,
-		url,
-		domain,
 		doc.PathFromDocRoot,
 		doc.PathFromDocRoot,
 		doc.Filename,

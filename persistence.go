@@ -25,7 +25,7 @@ func ReadPagesFromDir(dir string, domain string) []staticIntf.PageDto {
 	fileContainers := ReadJsonFilesFromDir(dir)
 	dtos := []staticIntf.PageDto{}
 	for _, fc := range fileContainers {
-		dtos = append(dtos, getDto(fc, domain))
+		dtos = append(dtos, getDto(fc))
 	}
 	return dtos
 }
@@ -41,33 +41,34 @@ func WritePagesToDir(dtos []staticIntf.PageDto, dirname string) {
 }
 
 func fixcontent(dto staticIntf.PageDto) staticIntf.PageDto {
-	cnew := cleanStringValue(dto.Content())
+	content := cleanStringValue(dto.Content())
 	regex, err := rx.NewRx("\n|\r|\n\r")
 	if err != nil {
 		log.Error(err)
 	}
-	cnew = regex.SubstituteAllOccurences(cnew, "")
-	cdate := (strings.Split(dto.CreateDate(), " "))[0]
-	dparts := strings.Split(cdate, "-")
+	content = regex.SubstituteAllOccurences(content, "")
+	createDate := (strings.Split(dto.CreateDate(), " "))[0]
+	dparts := strings.Split(createDate, "-")
 	if len(dparts) > 2 {
 		y := dparts[0]
 		m := dparts[1]
 		d := dparts[2]
-		cdate = fmt.Sprintf("%04s-%02s-%02s", y, m, d)
+		createDate = fmt.Sprintf("%04s-%02s-%02s", y, m, d)
 	}
 
 	return NewFilledDto(dto.Id(),
 		dto.Title(), dto.TitlePlain(), dto.ThumbUrl(),
-		dto.ImageUrl(), dto.Description(), dto.DisqusId(),
-		cdate, cnew, dto.Url(), dto.Domain(),
-		"/"+dto.PathFromDocRoot(), dto.FsPath(), dto.HtmlFilename(),
-		dto.ThumbBase64(), dto.Category(), dto.MicroThumbUrl(), dto.Tags(), dto.Images())
+		dto.ImageUrl(), dto.Description(),
+		createDate, content, "/"+dto.PathFromDocRoot(),
+		dto.FsPath(), dto.HtmlFilename(),
+		dto.ThumbBase64(), dto.Category(),
+		dto.MicroThumbUrl(), dto.Tags(), dto.Images())
 }
 
-func getDto(fc fs.FileContainer, domain string) staticIntf.PageDto {
+func getDto(fc fs.FileContainer) staticIntf.PageDto {
 	dao := newPageDaoReader(fc.GetData(), fc.GetPath(), fc.GetFilename())
 	log.Debug("reading: " + fc.GetPath() + "/" + fc.GetFilename())
-	dao.ExtractFromJson(domain)
+	dao.ExtractFromJson()
 	return dao.Dto()
 }
 
@@ -106,11 +107,8 @@ func fixJsonValues(dto staticIntf.PageDto) staticIntf.PageDto {
 		cleanStringValue(dto.ThumbUrl()),
 		cleanStringValue(dto.ImageUrl()),
 		cleanStringValue(dto.Description()),
-		cleanStringValue(dto.DisqusId()),
 		cleanStringValue(dto.CreateDate()),
 		cleanStringValue(dto.Content()),
-		cleanStringValue(dto.Url()),
-		cleanStringValue(dto.Domain()),
 		cleanStringValue(dto.PathFromDocRoot()),
 		cleanStringValue(dto.FsPath()),
 		cleanStringValue(dto.HtmlFilename()),
