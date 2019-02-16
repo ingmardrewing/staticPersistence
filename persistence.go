@@ -10,6 +10,9 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
+// Also used by staticAdd / addJson.go
+func JsonFileNameTemplate() string { return "doc%05d.json" }
+
 // dao versions
 type PageDao interface {
 	Dto(...staticIntf.PageDto) staticIntf.PageDto
@@ -28,10 +31,11 @@ func ReadPagesFromDir(dir string, domain string) []staticIntf.PageDto {
 }
 
 func WritePagesToDir(dtos []staticIntf.PageDto, dirname string) {
-	jsonName := "doc%05d.json"
 	counter := 0
 	for _, dto := range dtos {
-		WritePageDtoToJson(fixcontent(dto), dirname, fmt.Sprintf(jsonName, counter))
+		WritePageDtoToJson(fixcontent(dto),
+			dirname,
+			fmt.Sprintf(JsonFileNameTemplate(), counter))
 		counter = counter + 1
 	}
 }
