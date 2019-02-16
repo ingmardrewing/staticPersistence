@@ -1,1 +1,15 @@
-{"id":33,"pageNumber":33,"title":"#33 Atrocity","description":"","path":"/2015/01/01/33-atrocity","imgUrl":"https://devabode-us.s3.amazonaws.com/comicstrips/DevAbode_0033.png","disqusId":"475 http://DevAbo.de/?p=475","act":"Act II","thumbBase64":"iVBORw0KGg..."}
+{
+	"version":2,
+	"filename":"filenameValue",
+	"path_from_doc_root":"",
+	"category":"",
+	"tags":[],
+	"create_date":"dateValue",
+	"title":"titleValue",
+	"title_plain":"title_plainValue",
+	"excerpt":"excerptValue",
+	"content":"contentValue",
+	"thumb_base64":"",
+	"images_urls":[{"title":"Empires","w_190":"","w_390":"thumbImageValue","w_800":"postImageValue","max_resolution":""}]
+}
+

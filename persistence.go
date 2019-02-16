@@ -10,6 +10,9 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
+// Also used by staticAdd / addJson.go
+func JsonFileNameTemplate() string { return "doc%05d.json" }
+
 // dao versions
 type PageDao interface {
 	Dto(...staticIntf.PageDto) staticIntf.PageDto
@@ -18,7 +21,7 @@ type PageDao interface {
 	Data([]byte)
 }
 
-func ReadPagesFromDir(dir string) []staticIntf.PageDto {
+func ReadPagesFromDir(dir string, domain string) []staticIntf.PageDto {
 	fileContainers := ReadJsonFilesFromDir(dir)
 	dtos := []staticIntf.PageDto{}
 	for _, fc := range fileContainers {
@@ -28,27 +31,38 @@ func ReadPagesFromDir(dir string) []staticIntf.PageDto {
 }
 
 func WritePagesToDir(dtos []staticIntf.PageDto, dirname string) {
-	jsonName := "doc%05d.json"
 	counter := 0
 	for _, dto := range dtos {
-		WritePageDtoToJson(dto, dirname, fmt.Sprintf(jsonName, counter))
+		WritePageDtoToJson(fixcontent(dto),
+			dirname,
+			fmt.Sprintf(JsonFileNameTemplate(), counter))
 		counter = counter + 1
 	}
 }
 
 func fixcontent(dto staticIntf.PageDto) staticIntf.PageDto {
-	cnew := strings.Replace(dto.Content(), `"`, `\"`, -1)
+	content := cleanStringValue(dto.Content())
 	regex, err := rx.NewRx("\n|\r|\n\r")
 	if err != nil {
 		log.Error(err)
 	}
-	cnew = regex.SubstituteAllOccurences(cnew, "")
+	content = regex.SubstituteAllOccurences(content, "")
+	createDate := (strings.Split(dto.CreateDate(), " "))[0]
+	dparts := strings.Split(createDate, "-")
+	if len(dparts) > 2 {
+		y := dparts[0]
+		m := dparts[1]
+		d := dparts[2]
+		createDate = fmt.Sprintf("%04s-%02s-%02s", y, m, d)
+	}
+
 	return NewFilledDto(dto.Id(),
 		dto.Title(), dto.TitlePlain(), dto.ThumbUrl(),
-		dto.ImageUrl(), dto.Description(), dto.DisqusId(),
-		dto.CreateDate(), cnew, dto.Url(), dto.Domain(),
-		dto.PathFromDocRoot(), dto.FsPath(), dto.HtmlFilename(),
-		dto.ThumbBase64(), dto.Category(), dto.MicroThumbUrl())
+		dto.ImageUrl(), dto.Description(),
+		createDate, content, "/"+dto.PathFromDocRoot(),
+		dto.FsPath(), dto.HtmlFilename(),
+		dto.ThumbBase64(), dto.Category(),
+		dto.MicroThumbUrl(), dto.Tags(), dto.Images())
 }
 
 func getDto(fc fs.FileContainer) staticIntf.PageDto {
@@ -93,17 +107,16 @@ func fixJsonValues(dto staticIntf.PageDto) staticIntf.PageDto {
 		cleanStringValue(dto.ThumbUrl()),
 		cleanStringValue(dto.ImageUrl()),
 		cleanStringValue(dto.Description()),
-		cleanStringValue(dto.DisqusId()),
 		cleanStringValue(dto.CreateDate()),
 		cleanStringValue(dto.Content()),
-		cleanStringValue(dto.Url()),
-		cleanStringValue(dto.Domain()),
 		cleanStringValue(dto.PathFromDocRoot()),
 		cleanStringValue(dto.FsPath()),
 		cleanStringValue(dto.HtmlFilename()),
 		cleanStringValue(dto.ThumbBase64()),
 		cleanStringValue(dto.Category()),
-		cleanStringValue(dto.MicroThumbUrl()))
+		cleanStringValue(dto.MicroThumbUrl()),
+		dto.Tags(),
+		dto.Images())
 }
 
 func cleanStringValue(dirty string) string {
@@ -120,9 +133,14 @@ func removeLineBreaks(val string) string {
 }
 
 func removeQuotes(val string) string {
+	unescapedDoubleQuoteRx, err := rx.NewRx(`""`)
+	if err != nil {
+		log.Error(err)
+	}
 	unescapedQuoteRx, err := rx.NewRx(`([^\\])"`)
 	if err != nil {
 		log.Error(err)
 	}
-	return unescapedQuoteRx.SubstituteAllOccurences(val, `${1}\"`)
+	r1 := unescapedDoubleQuoteRx.SubstituteAllOccurences(val, `"\"`)
+	return unescapedQuoteRx.SubstituteAllOccurences(r1, `${1}\"`)
 }
