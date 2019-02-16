@@ -3,7 +3,6 @@ package staticPersistence
 import (
 	"encoding/json"
 	"fmt"
-	"strings"
 
 	log "github.com/sirupsen/logrus"
 
@@ -25,6 +24,7 @@ type pageDaoReader struct {
 	dto staticIntf.PageDto
 }
 
+/*
 func (a *pageDaoReader) extractUrlParts(url string) (string, string) {
 	if len(url) > 0 {
 		parts := strings.Split(url, "/")
@@ -38,7 +38,7 @@ func (a *pageDaoReader) extractUrlParts(url string) (string, string) {
 	return "", ""
 }
 
-func (a *pageDaoReader) ExtractFromJson() {
+func (a *pageDaoReader) ExtractFromJson(wurst string) {
 	var doc docJson
 	json.Unmarshal(a.data, &doc)
 
@@ -83,6 +83,43 @@ func (a *pageDaoReader) ExtractFromJson() {
 		log.Fatalln(doc)
 	}
 
+}
+*/
+
+func (a *pageDaoReader) ExtractFromJson(domain string) {
+	var doc docJson2
+	json.Unmarshal(a.data, &doc)
+
+	thumbUrl := ""
+	imageUrl := ""
+	microThumbUrl := ""
+	if len(doc.ImagesUrls) > 0 {
+		microThumbUrl = doc.ImagesUrls[0].W190
+		thumbUrl = doc.ImagesUrls[0].W390
+		imageUrl = doc.ImagesUrls[0].W800
+	}
+	log.Debug(doc.ImagesUrls)
+
+	url := fmt.Sprintf("https://%s%s", domain, doc.PathFromDocRoot)
+
+	a.dto = NewFilledDto(
+		0,
+		doc.Title,
+		doc.TitlePlain,
+		thumbUrl,
+		imageUrl,
+		doc.Description,
+		"",
+		doc.CreateDate,
+		doc.Content,
+		url,
+		domain,
+		doc.PathFromDocRoot,
+		doc.PathFromDocRoot,
+		doc.Filename,
+		doc.ThumbBase64,
+		doc.Category,
+		microThumbUrl)
 }
 
 func (a *pageDaoReader) Data(data []byte) {
@@ -212,7 +249,7 @@ type docJson2 struct {
 	Tags            []string    `json:"tags"`
 	CreateDate      string      `json:"create_date"`
 	Title           string      `json:"title"`
-	Title_plain     string      `json:"title_plain"`
+	TitlePlain      string      `json:"title_plain"`
 	Description     string      `json:"desription"`
 	Content         string      `json:"content"`
 	ThumbBase64     string      `json:"thumb_base64"`

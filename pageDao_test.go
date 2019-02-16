@@ -24,20 +24,6 @@ func readAndGetDto(path, file string) staticIntf.PageDto {
 	return a.Dto()
 }
 
-/*
-func TestNewPageDaoReader(t *testing.T) {
-	p := path.Join(currentDir(), "testResources", "posts")
-	f := "version0.json"
-	r := newPageDaoReader(readViaFc(p, f), p, f)
-	r.ExtractFromJson()
-	dto := r.Dto()
-	expected := "Food Market Analysis"
-	if dto.TitlePlain() == expected {
-		t.Error("Expected", expected, "but got", dto.Title())
-	}
-}
-*/
-
 func TestFillJson(t *testing.T) {
 	dto := NewFilledDto(42,
 		"titleValue",

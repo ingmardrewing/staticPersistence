@@ -18,11 +18,11 @@ type PageDao interface {
 	Data([]byte)
 }
 
-func ReadPagesFromDir(dir string) []staticIntf.PageDto {
+func ReadPagesFromDir(dir string, domain string) []staticIntf.PageDto {
 	fileContainers := ReadJsonFilesFromDir(dir)
 	dtos := []staticIntf.PageDto{}
 	for _, fc := range fileContainers {
-		dtos = append(dtos, getDto(fc))
+		dtos = append(dtos, getDto(fc, domain))
 	}
 	return dtos
 }
@@ -31,30 +31,39 @@ func WritePagesToDir(dtos []staticIntf.PageDto, dirname string) {
 	jsonName := "doc%05d.json"
 	counter := 0
 	for _, dto := range dtos {
-		WritePageDtoToJson(dto, dirname, fmt.Sprintf(jsonName, counter))
+		WritePageDtoToJson(fixcontent(dto), dirname, fmt.Sprintf(jsonName, counter))
 		counter = counter + 1
 	}
 }
 
 func fixcontent(dto staticIntf.PageDto) staticIntf.PageDto {
-	cnew := strings.Replace(dto.Content(), `"`, `\"`, -1)
+	cnew := cleanStringValue(dto.Content())
 	regex, err := rx.NewRx("\n|\r|\n\r")
 	if err != nil {
 		log.Error(err)
 	}
 	cnew = regex.SubstituteAllOccurences(cnew, "")
+	cdate := (strings.Split(dto.CreateDate(), " "))[0]
+	dparts := strings.Split(cdate, "-")
+	if len(dparts) > 2 {
+		y := dparts[0]
+		m := dparts[1]
+		d := dparts[2]
+		cdate = fmt.Sprintf("%04s-%02s-%02s", y, m, d)
+	}
+
 	return NewFilledDto(dto.Id(),
 		dto.Title(), dto.TitlePlain(), dto.ThumbUrl(),
 		dto.ImageUrl(), dto.Description(), dto.DisqusId(),
-		dto.CreateDate(), cnew, dto.Url(), dto.Domain(),
-		dto.PathFromDocRoot(), dto.FsPath(), dto.HtmlFilename(),
+		cdate, cnew, dto.Url(), dto.Domain(),
+		"/"+dto.PathFromDocRoot(), dto.FsPath(), dto.HtmlFilename(),
 		dto.ThumbBase64(), dto.Category(), dto.MicroThumbUrl())
 }
 
-func getDto(fc fs.FileContainer) staticIntf.PageDto {
+func getDto(fc fs.FileContainer, domain string) staticIntf.PageDto {
 	dao := newPageDaoReader(fc.GetData(), fc.GetPath(), fc.GetFilename())
 	log.Debug("reading: " + fc.GetPath() + "/" + fc.GetFilename())
-	dao.ExtractFromJson()
+	dao.ExtractFromJson(domain)
 	return dao.Dto()
 }
 
@@ -120,9 +129,14 @@ func removeLineBreaks(val string) string {
 }
 
 func removeQuotes(val string) string {
+	unescapedDoubleQuoteRx, err := rx.NewRx(`""`)
+	if err != nil {
+		log.Error(err)
+	}
 	unescapedQuoteRx, err := rx.NewRx(`([^\\])"`)
 	if err != nil {
 		log.Error(err)
 	}
-	return unescapedQuoteRx.SubstituteAllOccurences(val, `${1}\"`)
+	r1 := unescapedDoubleQuoteRx.SubstituteAllOccurences(val, `"\"`)
+	return unescapedQuoteRx.SubstituteAllOccurences(r1, `${1}\"`)
 }
