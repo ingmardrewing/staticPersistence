@@ -9,7 +9,7 @@ func NewFilledDto(id int,
 	path, fspath, htmlfilename,
 	thumbBase64, category, microThumbUrl string,
 	tags []string,
-	images []staticIntf.Image) *pageDTO {
+	images []staticIntf.Image) staticIntf.PageDto {
 
 	return &pageDTO{id, title, titlePlain, thumbUrl,
 		imageUrl, description,

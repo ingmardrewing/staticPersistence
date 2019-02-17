@@ -37,6 +37,7 @@ type Src struct {
 
 type JsonConfig struct {
 	Domain       string `json:"domain"`
+	SvgLogo      string `json:"svgLogo"`
 	BasePath     string `json:"basePath"`
 	HomeText     string `json:"homeText"`
 	HomeHeadline string `json:"homeHeadline"`
