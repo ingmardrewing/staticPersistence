@@ -24,22 +24,25 @@ func readAndGetDto(path, file string) staticIntf.PageDto {
 }
 
 func TestFillJson(t *testing.T) {
-	dto := NewFilledDto(42,
+	img := NewImageDto(
 		"titleValue",
-		"titlePlainValue",
+		"blogThumbUrl",
+		"microThumbUrl",
 		"thumbUrlValue",
 		"imageUrlValue",
+		"imageUrlValue",
+		"largeImageUrlValue",
+		"")
+	dto := NewFilledDto(
+		"titleValue",
 		"descriptionValue",
-		"createDateValue",
 		"contentValue",
-		"pathValue",
-		"fspathValue",
-		"htmlfilenameValue",
-		"thumbBase64Value",
 		"categoryValue",
-		"microThumbUrl",
-		[]string{},
-		[]staticIntf.Image{})
+		"createDateValue",
+		"pathValue",
+		"htmlfilenameValue",
+		[]string{"tag1", "tag2"},
+		[]staticIntf.Image{img})
 
 	d := new(pageDaoReader)
 	d.Dto(dto)
@@ -51,14 +54,21 @@ func TestFillJson(t *testing.T) {
 	"filename":"htmlfilenameValue",
 	"path_from_doc_root":"pathValue",
 	"category":"categoryValue",
-	"tags":[],
+	"tags":["tag1","tag2"],
 	"create_date":"createDateValue",
 	"title":"titleValue",
-	"title_plain":"titlePlainValue",
 	"excerpt":"descriptionValue",
 	"content":"contentValue",
-	"thumb_base64":"thumbBase64Value",
-	"images_urls":[{"title":"titleValue","w_190":"microThumbUrl","w_390":"thumbUrlValue","w_800":"imageUrlValue","max_resolution":""}]
+	"images_urls":[{
+		"title":"titleValue",
+		"w_85":"blogThumbUrl",
+		"w_190":"microThumbUrl",
+		"w_390":"thumbUrlValue",
+		"w_800":"imageUrlValue",
+		"w_800_portrait":"imageUrlValue",
+		"w_1600_portrait":"largeImageUrlValue",
+		"max_resolution":""
+	}]
 }`
 
 	if actual != expected {
@@ -71,20 +81,22 @@ func TestReadFile(t *testing.T) {
 	file := "version2.json"
 
 	actual := readAndGetDto(path, file)
-	expected := NewFilledDto(0,
-		"titleValue", "title_plainValue", "thumbImageValue",
-		"postImageValue", "excerptValue", "dateValue", "contentValue",
-
-		"", "", "filenameValue", "", "", "", []string{}, []staticIntf.Image{})
+	expected := NewFilledDto(
+		"titleValue",
+		"excerptValue",
+		"contentValue",
+		"",
+		"dateValue",
+		"",
+		"filenameValue",
+		[]string{},
+		[]staticIntf.Image{})
 
 	if expected.Title() != actual.Title() ||
 		expected.Description() != actual.Description() ||
-		expected.ThumbUrl() != actual.ThumbUrl() ||
-		expected.ImageUrl() != actual.ImageUrl() ||
-		expected.TitlePlain() != actual.TitlePlain() ||
 		expected.Content() != actual.Content() ||
-		expected.Content() != actual.Content() ||
-		expected.HtmlFilename() != actual.HtmlFilename() ||
+		expected.CreateDate() != actual.CreateDate() ||
+		expected.Filename() != actual.Filename() ||
 		expected.PathFromDocRoot() != actual.PathFromDocRoot() {
 		t.Error("Expected", actual, "to be", expected)
 	}

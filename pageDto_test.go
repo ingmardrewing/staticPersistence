@@ -7,43 +7,25 @@ import (
 )
 
 func TestNewFilledDto(t *testing.T) {
-	dto := NewFilledDto(42,
+	dto := NewFilledDto(
 		"titleValue",
-		"titlePlainValue",
-		"thumbUrlValue",
-		"imageUrlValue",
 		"descriptionValue",
-		"createDateValue",
 		"contentValue",
-		"pathValue",
-		"fspathValue",
-		"htmlfilenameValue",
-		"thumbBase64Value",
 		"categoryValue",
-		"microThumbValue",
+		"createDateValue",
+		"pathValue",
+		"htmlfilenameValue",
 		[]string{},
 		[]staticIntf.Image{})
 
-	if dto.Id() != 42 {
-		t.Error("Expected 42, but got ", dto.Id())
+	if dto.PathFromDocRoot() != "pathValue" {
+		t.Error("Expected pathValue, but got ", dto.PathFromDocRoot())
 	}
-	if dto.FsPath() != "fspathValue" {
-		t.Error("Expected fspathValue, but got ", dto.FsPath())
-	}
-	if dto.HtmlFilename() != "htmlfilenameValue" {
-		t.Error("Expected htmlfilenameValue, but got ", dto.HtmlFilename())
+	if dto.Filename() != "htmlfilenameValue" {
+		t.Error("Expected htmlfilenameValue, but got ", dto.Filename())
 	}
 	if dto.Title() != "titleValue" {
 		t.Error("Expected titleValue, but got ", dto.Title())
-	}
-	if dto.TitlePlain() != "titlePlainValue" {
-		t.Error("Expected titlePlainValue, but got ", dto.TitlePlain())
-	}
-	if dto.ThumbUrl() != "thumbUrlValue" {
-		t.Error("Expected thumbUrlValue, but got ", dto.ThumbUrl())
-	}
-	if dto.ImageUrl() != "imageUrlValue" {
-		t.Error("Expected imageUrlValue, but got ", dto.ImageUrl())
 	}
 	if dto.Description() != "descriptionValue" {
 		t.Error("Expected descriptionValue, but got ", dto.Description())
@@ -56,17 +38,5 @@ func TestNewFilledDto(t *testing.T) {
 	}
 	if dto.Category() != "categoryValue" {
 		t.Error("Expected categoryValue, but got ", dto.Category())
-	}
-	if dto.ThumbBase64() != "thumbBase64Value" {
-		t.Error("Expected thumbBase64Value, but got ", dto.ThumbBase64())
-	}
-	if dto.PathFromDocRoot() != "pathValue" {
-		t.Error("Expected pathValue, but got ", dto.PathFromDocRoot())
-	}
-	if dto.Category() != "categoryValue" {
-		t.Error("Expected categoryValue, but got ", dto.Category())
-	}
-	if dto.MicroThumbUrl() != "microThumbValue" {
-		t.Error("Expected microThumbValue, but got ", dto.MicroThumbUrl())
 	}
 }
