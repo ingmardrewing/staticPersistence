@@ -2,8 +2,8 @@ package staticPersistence
 
 func NewImageDto(
 	title,
-	w85Square,
-	w190Square,
+	w80Square,
+	w185Square,
 	w390Square,
 	w800Square,
 	w800,
@@ -11,8 +11,8 @@ func NewImageDto(
 	maxResolution string) *imageDTO {
 	return &imageDTO{
 		title,
-		w85Square,
-		w190Square,
+		w80Square,
+		w185Square,
 		w390Square,
 		w800Square,
 		w800,
@@ -23,8 +23,8 @@ func NewImageDto(
 // imageDTO
 type imageDTO struct {
 	title         string
-	w85Square     string
-	w190Square    string
+	w80Square     string
+	w185Square    string
 	w390Square    string
 	w800Square    string
 	w800          string
@@ -32,8 +32,8 @@ type imageDTO struct {
 	maxResolution string
 }
 
-func (i imageDTO) W85Square() string  { return i.w85Square }
-func (i imageDTO) W190Square() string { return i.w190Square }
+func (i imageDTO) W80Square() string  { return i.w80Square }
+func (i imageDTO) W185Square() string { return i.w185Square }
 func (i imageDTO) W390Square() string { return i.w390Square }
 func (i imageDTO) W800Square() string { return i.w800Square }
 

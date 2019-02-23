@@ -43,8 +43,8 @@ func (a *pageDaoReader) ExtractFromJson() {
 		images = append(images,
 			NewImageDto(
 				doc.ImagesUrls[0].Title,
-				doc.ImagesUrls[0].W85Square,
-				doc.ImagesUrls[0].W190Square,
+				doc.ImagesUrls[0].W80Square,
+				doc.ImagesUrls[0].W185Square,
 				doc.ImagesUrls[0].W390Square,
 				doc.ImagesUrls[0].W800Square,
 				doc.ImagesUrls[0].W800,
@@ -106,8 +106,8 @@ func (a *pageDaoReader) getImagesAsString() string {
 	for _, img := range a.dto.Images() {
 		imgString := fmt.Sprintf(a.ImageTemplate(),
 			img.Title(),
-			img.W85Square(),
-			img.W190Square(),
+			img.W80Square(),
+			img.W185Square(),
 			img.W390Square(),
 			img.W800Square(),
 			img.W800(),
@@ -148,8 +148,8 @@ func (a *pageDaoReader) Template() string {
 
 type imageUrls struct {
 	Title         string `json:"title"`
-	W85Square     string `json:"w_85"`
-	W190Square    string `json:"w_190"`
+	W80Square     string `json:"w_85"`
+	W185Square    string `json:"w_190"`
 	W390Square    string `json:"w_390"`
 	W800Square    string `json:"w_800"`
 	W800          string `json:"w_800_portrait"`
