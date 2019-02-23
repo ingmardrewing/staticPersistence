@@ -56,13 +56,16 @@ func fixcontent(dto staticIntf.PageDto) staticIntf.PageDto {
 		createDate = fmt.Sprintf("%04s-%02s-%02s", y, m, d)
 	}
 
-	return NewFilledDto(dto.Id(),
-		dto.Title(), dto.TitlePlain(), dto.ThumbUrl(),
-		dto.ImageUrl(), dto.Description(),
-		createDate, content, "/"+dto.PathFromDocRoot(),
-		dto.FsPath(), dto.HtmlFilename(),
-		dto.ThumbBase64(), dto.Category(),
-		dto.MicroThumbUrl(), dto.Tags(), dto.Images())
+	return NewFilledDto(
+		dto.Title(),
+		dto.Description(),
+		content,
+		dto.Category(),
+		createDate,
+		"/"+dto.PathFromDocRoot(),
+		dto.Filename(),
+		dto.Tags(),
+		dto.Images())
 }
 
 func getDto(fc fs.FileContainer) staticIntf.PageDto {
@@ -101,20 +104,13 @@ func WritePageDtoToJson(dto staticIntf.PageDto, path, filename string) {
 
 func fixJsonValues(dto staticIntf.PageDto) staticIntf.PageDto {
 	return NewFilledDto(
-		dto.Id(),
 		cleanStringValue(dto.Title()),
-		cleanStringValue(dto.TitlePlain()),
-		cleanStringValue(dto.ThumbUrl()),
-		cleanStringValue(dto.ImageUrl()),
 		cleanStringValue(dto.Description()),
-		cleanStringValue(dto.CreateDate()),
 		cleanStringValue(dto.Content()),
-		cleanStringValue(dto.PathFromDocRoot()),
-		cleanStringValue(dto.FsPath()),
-		cleanStringValue(dto.HtmlFilename()),
-		cleanStringValue(dto.ThumbBase64()),
 		cleanStringValue(dto.Category()),
-		cleanStringValue(dto.MicroThumbUrl()),
+		cleanStringValue(dto.CreateDate()),
+		cleanStringValue(dto.PathFromDocRoot()),
+		cleanStringValue(dto.Filename()),
 		dto.Tags(),
 		dto.Images())
 }
