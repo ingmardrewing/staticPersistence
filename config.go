@@ -48,6 +48,9 @@ type JsonConfig struct {
 	Src          []Src  `json:"src"`
 	DefaultMeta  struct {
 		BlogExcerpt     string `json:"blogExcerpt"`
+		KeyWords        string `json:"key_words"`
+		Subject         string `json:"subject"`
+		Author          string `json:"author"`
 		NaviPageTitle   string `json:"naviPageTitle"`
 		NaviPageExcerpt string `json:"naviPageExcerpt"`
 	} `json:"defaultMeta"`
