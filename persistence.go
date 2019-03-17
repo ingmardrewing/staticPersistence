@@ -21,7 +21,7 @@ type PageDao interface {
 	Data([]byte)
 }
 
-func ReadPagesFromDir(dir string, domain string) []staticIntf.PageDto {
+func ReadPagesFromDir(dir string) []staticIntf.PageDto {
 	fileContainers := ReadJsonFilesFromDir(dir)
 	dtos := []staticIntf.PageDto{}
 	for _, fc := range fileContainers {
@@ -89,11 +89,8 @@ func ReadJsonFilesFromDir(path string) []fs.FileContainer {
 }
 
 func WritePageDtoToJson(dto staticIntf.PageDto, path, filename string) {
-	newDto := fixJsonValues(dto)
-	fmt.Println(newDto.Content())
-
 	dao := newPageDaoReader(nil, path, filename)
-	dao.Dto(dto)
+	dao.Dto(fixJsonValues(dto))
 
 	fc := fs.NewFileContainer()
 	fc.SetDataAsString(string(dao.FillJson()))

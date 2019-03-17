@@ -30,8 +30,7 @@ func newPageDaoReader(data []byte, path, filename string) *pageDaoReader {
 
 type pageDaoReader struct {
 	data []byte
-	Json
-	dto staticIntf.PageDto
+	dto  staticIntf.PageDto
 }
 
 func (a *pageDaoReader) ExtractFromJson() {

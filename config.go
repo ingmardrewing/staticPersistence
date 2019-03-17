@@ -35,6 +35,12 @@ type Src struct {
 	SubDir   string `json:"subDir"`
 }
 
+type DefaultByTag struct {
+	Tag     string `json:"tag"`
+	Excerpt string `json:"excerpt"`
+	Content string `json:"content"`
+}
+
 type JsonConfig struct {
 	Domain       string `json:"domain"`
 	SvgLogo      string `json:"svgLogo"`
@@ -47,12 +53,13 @@ type JsonConfig struct {
 	WritePageDir string `json:"writePageDir"`
 	Src          []Src  `json:"src"`
 	DefaultMeta  struct {
-		BlogExcerpt     string `json:"blogExcerpt"`
-		KeyWords        string `json:"key_words"`
-		Subject         string `json:"subject"`
-		Author          string `json:"author"`
-		NaviPageTitle   string `json:"naviPageTitle"`
-		NaviPageExcerpt string `json:"naviPageExcerpt"`
+		BlogExcerpt     string         `json:"blogExcerpt"`
+		KeyWords        string         `json:"key_words"`
+		Subject         string         `json:"subject"`
+		Author          string         `json:"author"`
+		NaviPageTitle   string         `json:"naviPageTitle"`
+		NaviPageExcerpt string         `json:"naviPageExcerpt"`
+		DefaultByTags   []DefaultByTag `json:"defaultByTags"`
 	} `json:"defaultMeta"`
 	Context struct {
 		TwitterHandle   string `json:"twitterHandle"`
