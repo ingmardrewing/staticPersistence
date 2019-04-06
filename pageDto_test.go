@@ -7,7 +7,7 @@ import (
 )
 
 func TestNewFilledDto(t *testing.T) {
-	dto := NewFilledDto(
+	dto := NewPageDto(
 		"titleValue",
 		"descriptionValue",
 		"contentValue",

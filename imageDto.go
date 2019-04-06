@@ -8,8 +8,8 @@ func NewImageDto(
 	w800Square,
 	w800,
 	w1600,
-	maxResolution string) *imageDTO {
-	return &imageDTO{
+	maxResolution string) *imageDto {
+	return &imageDto{
 		title,
 		w80Square,
 		w185Square,
@@ -20,8 +20,8 @@ func NewImageDto(
 		maxResolution}
 }
 
-// imageDTO
-type imageDTO struct {
+// imageDto
+type imageDto struct {
 	title         string
 	w80Square     string
 	w185Square    string
@@ -32,13 +32,13 @@ type imageDTO struct {
 	maxResolution string
 }
 
-func (i imageDTO) W80Square() string  { return i.w80Square }
-func (i imageDTO) W185Square() string { return i.w185Square }
-func (i imageDTO) W390Square() string { return i.w390Square }
-func (i imageDTO) W800Square() string { return i.w800Square }
+func (i imageDto) W80Square() string  { return i.w80Square }
+func (i imageDto) W185Square() string { return i.w185Square }
+func (i imageDto) W390Square() string { return i.w390Square }
+func (i imageDto) W800Square() string { return i.w800Square }
 
-func (i imageDTO) W800() string  { return i.w800 }
-func (i imageDTO) W1600() string { return i.w1600 }
+func (i imageDto) W800() string  { return i.w800 }
+func (i imageDto) W1600() string { return i.w1600 }
 
-func (i imageDTO) MaxResolution() string { return i.maxResolution }
-func (i imageDTO) Title() string         { return i.title }
+func (i imageDto) MaxResolution() string { return i.maxResolution }
+func (i imageDto) Title() string         { return i.title }

@@ -33,7 +33,7 @@ func TestFillJson(t *testing.T) {
 		"imageUrlValue",
 		"largeImageUrlValue",
 		"")
-	dto := NewFilledDto(
+	dto := NewPageDto(
 		"titleValue",
 		"descriptionValue",
 		"contentValue",
@@ -81,7 +81,7 @@ func TestReadFile(t *testing.T) {
 	file := "version2.json"
 
 	actual := readAndGetDto(path, file)
-	expected := NewFilledDto(
+	expected := NewPageDto(
 		"titleValue",
 		"excerptValue",
 		"contentValue",
