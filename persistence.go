@@ -56,7 +56,7 @@ func fixcontent(dto staticIntf.PageDto) staticIntf.PageDto {
 		createDate = fmt.Sprintf("%04s-%02s-%02s", y, m, d)
 	}
 
-	return NewFilledDto(
+	return NewPageDto(
 		dto.Title(),
 		dto.Description(),
 		content,
@@ -100,7 +100,7 @@ func WritePageDtoToJson(dto staticIntf.PageDto, path, filename string) {
 }
 
 func fixJsonValues(dto staticIntf.PageDto) staticIntf.PageDto {
-	return NewFilledDto(
+	return NewPageDto(
 		cleanStringValue(dto.Title()),
 		cleanStringValue(dto.Description()),
 		cleanStringValue(dto.Content()),

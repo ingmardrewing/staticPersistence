@@ -13,7 +13,7 @@ import (
 
 func newPageDaoReader(data []byte, path, filename string) *pageDaoReader {
 	d := new(pageDaoReader)
-	dto := NewFilledDto(
+	dto := NewPageDto(
 		"",
 		"",
 		"",
@@ -52,7 +52,7 @@ func (a *pageDaoReader) ExtractFromJson() {
 	}
 	log.Debug(doc.ImagesUrls)
 
-	a.dto = NewFilledDto(
+	a.dto = NewPageDto(
 		doc.Title,
 		doc.Description,
 		doc.Content,

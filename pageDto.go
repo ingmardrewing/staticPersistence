@@ -2,54 +2,54 @@ package staticPersistence
 
 import "github.com/ingmardrewing/staticIntf"
 
-func NewFilledDto(
+func NewPageDto(
 	title,
 	description,
 	content,
 	category,
 	createDate,
-	path,
+	pathFromDocRoot,
 	filename string,
 	tags []string,
 	images []staticIntf.Image) staticIntf.PageDto {
 
-	return &pageDTO{
+	return &pageDto{
 		title,
 		description,
 		content,
 		category,
 		createDate,
-		path,
+		pathFromDocRoot,
 		filename,
 		tags,
 		images}
 }
 
 // docDtO
-type pageDTO struct {
-	title       string
-	description string
-	content     string
-	category    string
-	createDate  string
-	path        string
-	filename    string
-	tags        []string
-	images      []staticIntf.Image
+type pageDto struct {
+	title           string
+	description     string
+	content         string
+	category        string
+	createDate      string
+	pathFromDocRoot string
+	filename        string
+	tags            []string
+	images          []staticIntf.Image
 }
 
-func (p pageDTO) PathFromDocRoot() string { return p.path }
-func (p pageDTO) Filename() string        { return p.filename }
+func (p pageDto) PathFromDocRoot() string { return p.pathFromDocRoot }
+func (p pageDto) Filename() string        { return p.filename }
 
-func (p pageDTO) Title() string       { return p.title }
-func (p pageDTO) Description() string { return p.description }
-func (p pageDTO) Content() string     { return p.content }
-func (p pageDTO) Category() string    { return p.category }
-func (p pageDTO) CreateDate() string  { return p.createDate }
+func (p pageDto) Title() string       { return p.title }
+func (p pageDto) Description() string { return p.description }
+func (p pageDto) Content() string     { return p.content }
+func (p pageDto) Category() string    { return p.category }
+func (p pageDto) CreateDate() string  { return p.createDate }
 
-func (p pageDTO) Tags() []string {
+func (p pageDto) Tags() []string {
 	return p.tags
 }
-func (p pageDTO) Images() []staticIntf.Image {
+func (p pageDto) Images() []staticIntf.Image {
 	return p.images
 }

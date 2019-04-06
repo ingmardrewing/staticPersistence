@@ -96,7 +96,7 @@ func getPageDto(name string) staticIntf.PageDto {
 		"w1600Url"+name,
 		"maxResolutionUrl"+name)
 
-	dto := NewFilledDto(
+	dto := NewPageDto(
 		"title"+name,
 		"description"+name,
 		"content"+name,
