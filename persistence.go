@@ -10,6 +10,17 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
+// Reads the json config for the sites
+// returning a JsonConfig
+func ReadConfig(path, file string) []Config {
+	fc := fs.NewFileContainer()
+	fc.SetFilename(file)
+	fc.SetPath(path)
+	fc.Read()
+
+	return NewConfigs(fc.GetData())
+}
+
 // Also used by staticAdd / addJson.go
 func JsonFileNameTemplate() string { return "doc%05d.json" }
 
