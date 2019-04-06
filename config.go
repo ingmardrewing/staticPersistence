@@ -1,24 +1,11 @@
 package staticPersistence
 
-import (
-	"encoding/json"
+import "encoding/json"
 
-	"github.com/ingmardrewing/fs"
-)
-
-// Reads the json config for the sites
-// returning a JsonConfig
-func ReadConfig(path, file string) []JsonConfig {
-	fc := fs.NewFileContainer()
-	fc.SetFilename(file)
-	fc.SetPath(path)
-	fc.Read()
-
-	configBytes := fc.GetData()
-	configStructs := make([]JsonConfig, 0)
-	json.Unmarshal(configBytes, &configStructs)
-
-	return configStructs
+func NewConfigs(data []byte) []Config {
+	siteConfigs := make([]Config, 0)
+	json.Unmarshal(data, &siteConfigs)
+	return siteConfigs
 }
 
 type Link struct {
@@ -41,7 +28,7 @@ type DefaultByTag struct {
 	Content string `json:"content"`
 }
 
-type JsonConfig struct {
+type Config struct {
 	Domain       string `json:"domain"`
 	SvgLogo      string `json:"svgLogo"`
 	BasePath     string `json:"basePath"`
