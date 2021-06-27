@@ -7,7 +7,7 @@ import (
 
 func TestReadConfig(t *testing.T) {
 	p := path.Join(currentDir(), "testResources")
-	name := "configNew.json"
+	name := "config.json"
 
 	c := ReadConfig(p, name)
 
