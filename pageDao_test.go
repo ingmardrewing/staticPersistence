@@ -34,6 +34,7 @@ func TestFillJson(t *testing.T) {
 		"thumbUrlValue",
 		"imageUrlValue",
 		"imageUrlValue",
+		"imageUrlValue",
 		"largeImageUrlValue",
 		"")
 	dto := NewPageDto(
@@ -71,6 +72,7 @@ func TestFillJson(t *testing.T) {
 		"w_390":"thumbUrlValue",
 		"w_400":"thumbUrlValue",
 		"w_800":"imageUrlValue",
+		"w_1600":"imageUrlValue",
 		"w_800_portrait":"imageUrlValue",
 		"w_1600_portrait":"largeImageUrlValue",
 		"max_resolution":""

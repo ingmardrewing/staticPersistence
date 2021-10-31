@@ -4,11 +4,12 @@ func NewImageDto(
 	title,
 	w80Square,
 	w100Square,
-	w185Square,
+	w190Square,
 	w200Square,
 	w390Square,
 	w400Square,
 	w800Square,
+	w1600Square,
 	w800,
 	w1600,
 	maxResolution string) *imageDto {
@@ -16,11 +17,12 @@ func NewImageDto(
 		title,
 		w80Square,
 		w100Square,
-		w185Square,
+		w190Square,
 		w200Square,
 		w390Square,
 		w400Square,
 		w800Square,
+		w1600Square,
 		w800,
 		w1600,
 		maxResolution}
@@ -31,23 +33,25 @@ type imageDto struct {
 	title         string
 	w80Square     string
 	w100Square    string
-	w185Square    string
+	w190Square    string
 	w200Square    string
 	w390Square    string
 	w400Square    string
 	w800Square    string
+	w1600Square   string
 	w800          string
 	w1600         string
 	maxResolution string
 }
 
-func (i imageDto) W80Square() string  { return i.w80Square }
-func (i imageDto) W100Square() string { return i.w100Square }
-func (i imageDto) W185Square() string { return i.w185Square }
-func (i imageDto) W200Square() string { return i.w200Square }
-func (i imageDto) W390Square() string { return i.w390Square }
-func (i imageDto) W400Square() string { return i.w400Square }
-func (i imageDto) W800Square() string { return i.w800Square }
+func (i imageDto) W80Square() string   { return i.w80Square }
+func (i imageDto) W100Square() string  { return i.w100Square }
+func (i imageDto) W190Square() string  { return i.w190Square }
+func (i imageDto) W200Square() string  { return i.w200Square }
+func (i imageDto) W390Square() string  { return i.w390Square }
+func (i imageDto) W400Square() string  { return i.w400Square }
+func (i imageDto) W800Square() string  { return i.w800Square }
+func (i imageDto) W1600Square() string { return i.w1600Square }
 
 func (i imageDto) W800() string  { return i.w800 }
 func (i imageDto) W1600() string { return i.w1600 }

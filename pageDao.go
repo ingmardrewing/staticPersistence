@@ -44,11 +44,12 @@ func (a *pageDaoReader) ExtractFromJson() {
 				doc.ImagesUrls[0].Title,
 				doc.ImagesUrls[0].W80Square,
 				doc.ImagesUrls[0].W100Square,
-				doc.ImagesUrls[0].W185Square,
+				doc.ImagesUrls[0].W190Square,
 				doc.ImagesUrls[0].W200Square,
 				doc.ImagesUrls[0].W390Square,
 				doc.ImagesUrls[0].W400Square,
 				doc.ImagesUrls[0].W800Square,
+				doc.ImagesUrls[0].W1600Square,
 				doc.ImagesUrls[0].W800,
 				doc.ImagesUrls[0].W1600,
 				doc.ImagesUrls[0].MaxResolution))
@@ -110,11 +111,12 @@ func (a *pageDaoReader) getImagesAsString() string {
 			img.Title(),
 			img.W80Square(),
 			img.W100Square(),
-			img.W185Square(),
+			img.W190Square(),
 			img.W200Square(),
 			img.W390Square(),
 			img.W400Square(),
 			img.W800Square(),
+			img.W1600Square(),
 			img.W800(),
 			img.W1600(),
 			img.MaxResolution())
@@ -133,6 +135,7 @@ func (a *pageDaoReader) ImageTemplate() string {
 		"w_390":"%s",
 		"w_400":"%s",
 		"w_800":"%s",
+		"w_1600":"%s",
 		"w_800_portrait":"%s",
 		"w_1600_portrait":"%s",
 		"max_resolution":"%s"
@@ -158,13 +161,14 @@ type imageUrls struct {
 	Title         string `json:"title"`
 	W80Square     string `json:"w_85"`
 	W100Square    string `json:"w_100"`
-	W185Square    string `json:"w_190"`
+	W190Square    string `json:"w_190"`
 	W200Square    string `json:"w_200"`
 	W390Square    string `json:"w_390"`
 	W400Square    string `json:"w_400"`
 	W800Square    string `json:"w_800"`
+	W1600Square   string `json:"w_1600"`
 	W800          string `json:"w_800_portrait"`
-	W1600         string `json:"w_800_portrait"`
+	W1600         string `json:"w_1600_portrait"`
 	MaxResolution string `json:"max_resolution"`
 }
 

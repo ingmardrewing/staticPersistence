@@ -90,11 +90,12 @@ func getPageDto(name string) staticIntf.PageDto {
 	img := NewImageDto("imageTitle"+name,
 		"w80SquareUrl"+name,
 		"w100SquareUrl"+name,
-		"w185SquareUrl"+name,
+		"w190SquareUrl"+name,
 		"w200SquareUrl"+name,
 		"w390SquareUrl"+name,
 		"w400SquareUrl"+name,
 		"w800SquareUrl"+name,
+		"w1600SquareUrl"+name,
 		"w800Url"+name,
 		"w1600Url"+name,
 		"maxResolutionUrl"+name)
