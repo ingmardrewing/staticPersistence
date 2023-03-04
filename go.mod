@@ -1,4 +1,4 @@
-module github.com/ingmardrewing/staticpersistence
+module github.com/ingmardrewing/staticPersistence
 
 go 1.20
 
