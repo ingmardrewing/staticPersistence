@@ -27,8 +27,12 @@ func TestFillJson(t *testing.T) {
 	img := NewImageDto(
 		"titleValue",
 		"blogThumbUrl",
+		"blogThumbUrl",
+		"microThumbUrl",
 		"microThumbUrl",
 		"thumbUrlValue",
+		"thumbUrlValue",
+		"imageUrlValue",
 		"imageUrlValue",
 		"imageUrlValue",
 		"largeImageUrlValue",
@@ -62,9 +66,13 @@ func TestFillJson(t *testing.T) {
 	"images_urls":[{
 		"title":"titleValue",
 		"w_85":"blogThumbUrl",
+		"w_100":"blogThumbUrl",
 		"w_190":"microThumbUrl",
+		"w_200":"microThumbUrl",
 		"w_390":"thumbUrlValue",
+		"w_400":"thumbUrlValue",
 		"w_800":"imageUrlValue",
+		"w_1600":"imageUrlValue",
 		"w_800_portrait":"imageUrlValue",
 		"w_1600_portrait":"largeImageUrlValue",
 		"max_resolution":""

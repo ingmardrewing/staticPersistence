@@ -29,17 +29,18 @@ type DefaultByTag struct {
 }
 
 type Config struct {
-	Domain       string `json:"domain"`
-	SvgLogo      string `json:"svgLogo"`
-	BasePath     string `json:"basePath"`
-	HomeText     string `json:"homeText"`
-	HomeHeadline string `json:"homeHeadline"`
-	AddPostDir   string `json:"addPostDir"`
-	WritePostDir string `json:"writePostDir"`
-	AddPageDir   string `json:"addPageDir"`
-	WritePageDir string `json:"writePageDir"`
-	Src          []Src  `json:"src"`
-	DefaultMeta  struct {
+	DeployedStaticAssetsLocation string `json:"deployedStaticAssetsLocation"`
+	Domain                       string `json:"domain"`
+	SvgLogo                      string `json:"svgLogo"`
+	BasePath                     string `json:"basePath"`
+	HomeText                     string `json:"homeText"`
+	HomeHeadline                 string `json:"homeHeadline"`
+	AddPostDir                   string `json:"addPostDir"`
+	WritePostDir                 string `json:"writePostDir"`
+	AddPageDir                   string `json:"addPageDir"`
+	WritePageDir                 string `json:"writePageDir"`
+	Src                          []Src  `json:"src"`
+	DefaultMeta                  struct {
 		BlogExcerpt     string         `json:"blogExcerpt"`
 		KeyWords        string         `json:"key_words"`
 		Subject         string         `json:"subject"`
