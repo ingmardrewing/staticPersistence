@@ -13,6 +13,8 @@ github.com/ingmardrewing/rx v0.0.0-20180718105418-9f48d70d9a1c h1:01vjlkHvVMqdjD
 github.com/ingmardrewing/rx v0.0.0-20180718105418-9f48d70d9a1c/go.mod h1:0zFC7jnI2QrODuEtVSnk+iGuDehjRzLELXOQS+okkXQ=
 github.com/ingmardrewing/staticIntf v0.0.0-20210619160650-7dcb428ed991 h1:ht7s57IyEMOpYtqZPc4BqfpnItvUaHv+o7kEq6u3CQc=
 github.com/ingmardrewing/staticIntf v0.0.0-20210619160650-7dcb428ed991/go.mod h1:4cDRC3kAw7CouJ6MCaUEGzrvhaLJz2xWSdXKP6vo0rw=
+github.com/ingmardrewing/staticIntf v1.0.0 h1:SN/B80jq4HKj+ImXVJwgtgfq8gstX5UOcLWkyVHO1pU=
+github.com/ingmardrewing/staticIntf v1.0.0/go.mod h1:Ty3aly6QJEkJml1CP7yOhebKAkUpraSWJK0uUHfoW+Q=
 github.com/ingmardrewing/staticUtil v0.0.0-20190224115433-801715c5fec0 h1:nPQ8CUF+eYRhufgRjYSaT7FvUNK/u1WqrkrUFrTZcAs=
 github.com/ingmardrewing/staticUtil v0.0.0-20190224115433-801715c5fec0/go.mod h1:IAgvYgvp/t6aE0rtgml+hVXqtiB0KWcAG97R2fvFw20=
 github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZbAQM=

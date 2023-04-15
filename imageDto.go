@@ -46,6 +46,7 @@ type imageDto struct {
 
 func (i imageDto) W80Square() string   { return i.w80Square }
 func (i imageDto) W100Square() string  { return i.w100Square }
+func (i imageDto) W185Square() string  { return i.w190Square }
 func (i imageDto) W190Square() string  { return i.w190Square }
 func (i imageDto) W200Square() string  { return i.w200Square }
 func (i imageDto) W390Square() string  { return i.w390Square }

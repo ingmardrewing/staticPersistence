@@ -2,6 +2,29 @@ package staticPersistence
 
 import "github.com/ingmardrewing/staticIntf"
 
+func NewFilledDto(
+	title,
+	description,
+	content,
+	category,
+	createDate,
+	pathFromDocRoot,
+	filename string,
+	tags []string,
+	images []staticIntf.Image) staticIntf.PageDto {
+
+	return &pageDto{
+		title,
+		description,
+		content,
+		category,
+		createDate,
+		pathFromDocRoot,
+		filename,
+		tags,
+		images}
+}
+
 func NewPageDto(
 	title,
 	description,
